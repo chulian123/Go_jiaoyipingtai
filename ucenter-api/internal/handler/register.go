@@ -4,6 +4,8 @@ package handler
 
 import (
 	"github.com/zeromicro/go-zero/rest/httpx"
+	common "mscoin-common"
+
 	"net/http"
 	"ucenter-api/internal/logic"
 	"ucenter-api/internal/svc"
@@ -26,13 +28,22 @@ func (h *RegisterHandler) Register(w http.ResponseWriter, r *http.Request) {
 	//	httpx.ErrorCtx(r.Context(), w, err)
 	//	return
 	//}
-
 	l := logic.NewRegisterLogic(r.Context(), h.svcCtx)
 	resp, err := l.Register(&req)
-	if err != nil {
+	result := common.NewResult().Deal(resp, err)
+	httpx.OkJsonCtx(r.Context(), w, result)
+
+}
+
+func (h *RegisterHandler) SendCode(w http.ResponseWriter, r *http.Request) {
+	var req types.CodeRequest
+	if err := httpx.ParseJsonBody(r, &req); err != nil {
 		httpx.ErrorCtx(r.Context(), w, err)
-	} else {
-		httpx.OkJsonCtx(r.Context(), w, resp)
+		return
 	}
+	l := logic.NewRegisterLogic(r.Context(), h.svcCtx)
+	resp, err := l.SendCode(&req)
+	result := common.NewResult().Deal(resp, err)
+	httpx.OkJsonCtx(r.Context(), w, result)
 
 }

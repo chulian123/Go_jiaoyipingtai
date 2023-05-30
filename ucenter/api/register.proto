@@ -23,7 +23,14 @@ message CaptchaReq {
 }
 
 message RegRes {}
+message NoRes {}
+
+message CodeReq {
+  string phone = 1;
+  string country = 2;
+}
 
 service Register {
   rpc registerByPhone(RegReq) returns(RegRes);
+  rpc sendCode(CodeReq) returns(NoRes);
 }

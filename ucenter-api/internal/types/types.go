@@ -8,3 +8,13 @@ type Request struct {
 type Response struct {
 	Message string `json:"message"`
 }
+
+// code 前端发过来的内容 请求体 返回手机号
+type CodeRequest struct {
+	Phone   string `json:"phone,optional"`
+	Country string `json:"country,optional"`
+}
+
+// 验证码  返回给前端的响应代码
+type CodeResponse struct {
+}
