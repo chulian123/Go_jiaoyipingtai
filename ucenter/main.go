@@ -3,11 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
-
-	"ucenter/api/register/internal/config"
-	"ucenter/api/register/internal/server"
-	"ucenter/api/register/internal/svc"
-	"ucenter/api/types/register"
+	"github.com/zeromicro/go-zero/core/logx"
+	"grpc-common/ucenter/types/register"
+	"ucenter/internal/config"
+	"ucenter/internal/server"
+	"ucenter/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"
@@ -16,10 +16,15 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-var configFile = flag.String("f", "etc/register.yaml", "the config file")
+var configFile = flag.String("f", "etc/config.yaml", "the config file")
 
 func main() {
 	flag.Parse()
+	//日志的格式替换
+	logx.MustSetup(logx.LogConf{
+		Stat:     false,
+		Encoding: "plain",
+	})
 
 	var c config.Config
 	conf.MustLoad(*configFile, &c)

@@ -1,6 +1,8 @@
 package svc
 
-import "ucenter/api/register/internal/config"
+import (
+	"ucenter/internal/config"
+)
 
 type ServiceContext struct {
 	Config config.Config
