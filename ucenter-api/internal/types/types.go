@@ -2,7 +2,15 @@
 package types
 
 type Request struct {
-	Name string `path:"name,options=you|me"`
+	Username     string      `json:"username"`
+	Password     string      `json:"password,optional"`
+	Captcha      *CaptchaReq `json:"captcha,optional"`
+	Phone        string      `json:"phone,optional"`
+	Promotion    string      `json:"promotion,optional"`
+	Code         string      `json:"code,optional"`
+	Country      string      `json:"country,optional"`
+	SuperPartner string      `json:"superPartner,optional"`
+	Ip           string      `json:"ip,optional"`
 }
 
 type Response struct {
@@ -17,4 +25,9 @@ type CodeRequest struct {
 
 // 验证码  返回给前端的响应代码
 type CodeResponse struct {
+}
+
+type CaptchaReq struct {
+	Server string `json:"server"`
+	Token  string `json:"token"`
 }

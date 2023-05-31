@@ -4,6 +4,7 @@ package logic
 
 import (
 	"context"
+	"github.com/jinzhu/copier"
 	"grpc-common/ucenter/types/register"
 	"time"
 	"ucenter-api/internal/svc"
@@ -31,7 +32,13 @@ func (l *RegisterLogic) Register(req *types.Request) (resp *types.Response, err 
 	logx.Info("api Register")
 	ctx, cancelFunc := context.WithTimeout(context.Background(), 5*time.Second) //设置5秒超时时间 防止链接长时间占用资源
 	defer cancelFunc()
-	_, err = l.svcCtx.UCRegisterRpc.RegisterByPhone(ctx, &register.RegReq{})
+
+	reqRep := &register.RegReq{}
+	if err = copier.Copy(reqRep, req); err != nil {
+		return nil, err
+	}
+
+	_, err = l.svcCtx.UCRegisterRpc.RegisterByPhone(ctx, reqRep)
 	if err != nil {
 		return nil, err //如果注册失败就返回
 	}
