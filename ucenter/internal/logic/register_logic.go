@@ -19,6 +19,7 @@ type RegisterLogic struct {
 	svcCtx *svc.ServiceContext
 	logx.Logger
 	CaptchaDomain *domain.CaptchaDomain
+	MemberDomain  *domain.MemberDomain
 }
 
 func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RegisterLogic {
@@ -27,6 +28,7 @@ func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Register
 		svcCtx:        svcCtx,
 		Logger:        logx.WithContext(ctx),
 		CaptchaDomain: domain.NewCaptchaDomain(),
+		MemberDomain:  domain.NewMemberDomain(svcCtx.Db), //传入数据库链接
 	}
 }
 
@@ -48,10 +50,11 @@ func (l *RegisterLogic) RegisterByPhone(in *register.RegReq) (*register.RegRes, 
 	logx.Info("人机校验通过 ...")
 
 	//2.校验验证码
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
+	//ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	//defer cancel()
+	ctx := context.Background()
 	redisValue := "" //设置验证码为空数值，
-	err := l.svcCtx.Cache.GetCtx(ctx, RegisterCacheKey+in.Phone, redisValue)
+	err := l.svcCtx.Cache.GetCtx(ctx, RegisterCacheKey+in.Phone, &redisValue)
 	if err != nil {
 		return nil, errors.New("redis验证码获取错误")
 	}
@@ -61,7 +64,17 @@ func (l *RegisterLogic) RegisterByPhone(in *register.RegReq) (*register.RegRes, 
 	}
 
 	//3.验证码通过后 进行注册步骤
+	//首先验证手机好是否认证过
+	mem, err := l.MemberDomain.FindByPhone(ctx, in.Phone)
+	if err != nil {
+		return nil, errors.New("服务异常,请联系管理员")
+	}
+	if mem != nil {
+		return nil, errors.New("该手机号已经被注册了")
+	}
+	logx.Info("第三步完成!")
 
+	//4.生成member模型，存入数据库
 	return &register.RegRes{}, nil
 }
 

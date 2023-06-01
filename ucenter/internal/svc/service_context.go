@@ -3,8 +3,8 @@ package svc
 import (
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"mscoin-common/msdb"
-	"ucenter/database"
 	"ucenter/internal/config"
+	"ucenter/internal/database"
 )
 
 // ServiceContext 在这里分别注册上config ，redis，mysql的配置内容

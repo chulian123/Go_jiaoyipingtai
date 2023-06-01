@@ -8,9 +8,6 @@ import (
 
 //服务器对前端认证 的二次认证
 
-type CaptchaDomain struct {
-}
-
 type vaptchaReq struct {
 	Id        string `json:"id"`
 	Secretkey string `json:"secretkey"`
@@ -22,6 +19,9 @@ type vaptchaRsp struct {
 	Success int    `json:"success"`
 	Score   int    `json:"score"`
 	Msg     string `json:"msg"`
+}
+
+type CaptchaDomain struct {
 }
 
 func (d CaptchaDomain) Verify(server string, vid string, key string, token string, scene int, ip string) bool {
