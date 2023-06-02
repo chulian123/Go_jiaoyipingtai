@@ -50,9 +50,9 @@ func (l *RegisterLogic) RegisterByPhone(in *register.RegReq) (*register.RegRes, 
 	logx.Info("人机校验通过 ...")
 
 	//2.校验验证码
-	//ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	//defer cancel()
-	ctx := context.Background()
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	//ctx := context.Background()
 	redisValue := "" //设置验证码为空数值，
 	err := l.svcCtx.Cache.GetCtx(ctx, RegisterCacheKey+in.Phone, &redisValue)
 	if err != nil {
@@ -75,6 +75,10 @@ func (l *RegisterLogic) RegisterByPhone(in *register.RegReq) (*register.RegRes, 
 	logx.Info("第三步完成!")
 
 	//4.生成member模型，存入数据库
+	err = l.MemberDomain.Register(ctx, in.Phone, in.Password, in.Username, in.Country, in.SuperPartner, in.Promotion)
+	if err != nil {
+		return nil, errors.New("注册失败")
+	}
 	return &register.RegRes{}, nil
 }
 

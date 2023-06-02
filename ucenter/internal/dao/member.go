@@ -12,6 +12,13 @@ type MemberDao struct {
 	conn *gorms.GormConn
 }
 
+func (m *MemberDao) Save(ctx context.Context, mem *model.Member) error {
+	//TODO implement me
+	session := m.conn.Session(ctx)
+	err := session.Save(mem).Error
+	return err
+}
+
 func (m *MemberDao) FindByPhone(ctx context.Context, phone string) (mem *model.Member, err error) {
 	//TODO implement me
 	session := m.conn.Session(ctx)
