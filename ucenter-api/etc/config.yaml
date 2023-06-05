@@ -11,3 +11,6 @@ Mysql:
 CacheRedis:
   - Host: www.dzhxka.com:5600
     Type: node
+JWT:
+  AccessSecret: "!@#$mscoin"
+  AccessExpire: 604800
