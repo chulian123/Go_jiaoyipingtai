@@ -10,28 +10,21 @@ import (
 //并返回该反射值，以便在Default函数中设置结构体字段的默认值。
 
 func Default(data any) error {
-	// 获取传入数据的类型和值
 	typeOf := reflect.TypeOf(data)
 	valueOf := reflect.ValueOf(data)
-
-	// 检查传入的数据是否为指针类型
-	if typeOf.Kind() != reflect.Ptr {
-		return errors.New("must be pointer") // 必须是指针类型
+	if typeOf.Kind() != reflect.Pointer {
+		return errors.New("must be pointer")
 	}
-
-	// 获取指针指向的元素类型
+	//member
 	ele := typeOf.Elem()
 	valueEle := valueOf.Elem()
-
-	// 遍历结构体字段
 	for i := 0; i < ele.NumField(); i++ {
 		field := ele.Field(i)
-		// field.Tag.Get("defaulnt")
 		value := valueEle.Field(i)
+		//field.Tag.Get("default")
 		kind := field.Type.Kind()
-
-		// 根据字段类型设置默认值
 		if kind == reflect.Int {
+			//根据设置的tag进行值的设置
 			value.Set(defaultInt())
 		}
 		if kind == reflect.Int32 {
@@ -50,42 +43,35 @@ func Default(data any) error {
 			value.Set(defaultFloat32())
 		}
 	}
-
 	return nil
 }
 
-// 设置字符串类型字段的默认值
 func defaultString() reflect.Value {
 	var i = ""
 	return reflect.ValueOf(i)
 }
 
-// 设置整型字段的默认值
+//bug 记录 这里返回值不能为负数 不然会导致gorm框架注册不能正常insert数据
+
 func defaultInt() reflect.Value {
-	var i int = -1
+	var i int = 0
 	return reflect.ValueOf(i)
 }
 
-// 设置Int32类型字段的默认值
 func defaultInt32() reflect.Value {
-	var i int32 = -1
+	var i int32 = 0
 	return reflect.ValueOf(i)
 }
-
-// 设置Int64类型字段的默认值
 func defaultInt64() reflect.Value {
-	var i int64 = -1
+	var i int64 = 0
 	return reflect.ValueOf(i)
 }
 
-// 设置Float64类型字段的默认值
 func defaultFloat64() reflect.Value {
-	var i float64 = -1
+	var i float64 = 0
 	return reflect.ValueOf(i)
 }
-
-// 设置Float32类型字段的默认值
 func defaultFloat32() reflect.Value {
-	var i float32 = -1
+	var i float32 = 0
 	return reflect.ValueOf(i)
 }

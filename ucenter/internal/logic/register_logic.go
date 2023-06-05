@@ -75,7 +75,7 @@ func (l *RegisterLogic) RegisterByPhone(in *register.RegReq) (*register.RegRes, 
 	logx.Info("第三步完成!")
 
 	//4.生成member模型，存入数据库
-	err = l.MemberDomain.Register(ctx, in.Phone, in.Password, in.Username, in.Country, in.SuperPartner, in.Promotion)
+	err = l.MemberDomain.Register(context.Background(), in.Phone, in.Password, in.Username, in.Country, in.SuperPartner, in.Promotion)
 	if err != nil {
 		return nil, errors.New("注册失败")
 	}

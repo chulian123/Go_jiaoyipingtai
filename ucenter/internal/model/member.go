@@ -2,7 +2,7 @@ package model
 
 type Member struct {
 	Id                         int64   `gorm:"column:id"`
-	AliNo                      string  `gorm:"column:ali_no"`
+	AliNo                      string  `gorm:"column:ali_no" default:"0"`
 	QrCodeUrl                  string  `gorm:"column:qr_code_url"`
 	AppealSuccessTimes         int64   `gorm:"column:appeal_success_times"`
 	AppealTimes                int64   `gorm:"column:appeal_times"`
@@ -42,7 +42,7 @@ type Member struct {
 	RegistrationTime           int64   `gorm:"column:registration_time"`
 	Salt                       string  `gorm:"column:salt"`
 	SecondLevel                int64   `gorm:"column:second_level"`
-	SignInAbility              int     `gorm:"column:sign_in_ability"`
+	SignInAbility              int64   `gorm:"column:sign_in_ability"`
 	Status                     int64   `gorm:"column:status"`
 	ThirdLevel                 int64   `gorm:"column:third_level"`
 	Token                      string  `gorm:"column:token"`
@@ -67,7 +67,6 @@ type Member struct {
 	MemberLevelId              int64   `gorm:"column:member_level_id"`
 }
 
-// TableName 设定memberDao所查询的数据表名
 func (*Member) TableName() string {
 	return "Member"
 }
@@ -109,6 +108,19 @@ func (m *Member) MemberLevelStr() string {
 		return "认证商家"
 	}
 	return ""
+}
+
+func (m *Member) MemberRate() int32 {
+	if m.SuperPartner == NORMALPARTER {
+		return 0
+	}
+	if m.SuperPartner == SUPERPARTER {
+		return 1
+	}
+	if m.SuperPartner == PSUPERPARTER {
+		return 2
+	}
+	return 0
 }
 
 func NewMember() *Member {
