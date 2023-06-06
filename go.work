@@ -5,4 +5,5 @@ use (
 	./ucenter
 	./ucenter-api
 	./mscoin-common
+	./jobcenter
 )

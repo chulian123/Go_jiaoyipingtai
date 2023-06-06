@@ -1,0 +1,16 @@
+Okx:
+  ApiKey: "d5a748c6-214d-4fae-bef3-d32368ecbbe8"
+  SecretKey: "004148A48D9335E147963C6F5B9C4E63"
+  Pass: "Mszlu!@#$56789"
+  Host: "https://www.okx.com"
+  Proxy: "http://localhost:7890"
+  #这里地址是指你的代理软件地址 vpn clash软件的http端口
+Mongo:
+  Url: "mongodb://www.dzhxak.com:6000"
+ # Username: "root"
+ # Password: "root123456"
+  DataBase: "mscoin"
+Kafka:
+  Addr: localhost:9092
+  WriteCap: 100
+  ReadCap: 100
