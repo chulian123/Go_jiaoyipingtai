@@ -28,8 +28,9 @@ func main() {
 		select {
 		case <-exit:
 			log.Println("监听到中断信号，终止程序")
-			//	client.Disconnect()
 			t.Stop()
+			ctx.MongoClient.Disconnect()
+
 		}
 	}()
 
