@@ -8,7 +8,7 @@ Okx:
 Mongo:
   Url: "mongodb://www.dzhxka.com:6000"
   Username: "root"
-  Password: "root123456"
+  Password: "Chulianpzj12345"
   DataBase: "mscoin"
 Kafka:
   Addr: localhost:9092
