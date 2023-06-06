@@ -6,9 +6,9 @@ Okx:
   Proxy: "http://localhost:7890"
   #这里地址是指你的代理软件地址 vpn clash软件的http端口
 Mongo:
-  Url: "mongodb://www.dzhxak.com:6000"
- # Username: "root"
- # Password: "root123456"
+  Url: "mongodb://www.dzhxka.com:6000"
+  Username: "root"
+  Password: "root123456"
   DataBase: "mscoin"
 Kafka:
   Addr: localhost:9092
