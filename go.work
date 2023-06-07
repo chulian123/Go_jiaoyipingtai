@@ -6,4 +6,6 @@ use (
 	./ucenter-api
 	./mscoin-common
 	./jobcenter
+	./market
+	./market-api
 )

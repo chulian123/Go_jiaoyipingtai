@@ -28,7 +28,7 @@ type OkxConfig struct {
 type Kline struct {
 	wg          sync.WaitGroup
 	c           OkxConfig
-	klineDomain *domain.KlineDomain
+	klineDomain *domain.MemberDomain
 }
 
 func (k *Kline) Do(period string) {

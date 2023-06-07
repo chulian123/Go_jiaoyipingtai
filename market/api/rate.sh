@@ -1,0 +1,1 @@
+protoc rate.proto --go_out=./types --go-grpc_out=./types
