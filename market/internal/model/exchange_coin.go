@@ -34,5 +34,5 @@ type ExchangeCoin struct {
 
 // 对应的数据库操作名字
 func (*ExchangeCoin) TableName() string {
-	return "*exchange_coin"
+	return "exchange_coin"
 }

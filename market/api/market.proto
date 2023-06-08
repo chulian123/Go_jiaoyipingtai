@@ -1,0 +1,34 @@
+syntax = "proto3";
+package market;
+
+// protoc-gen-go 版本大于1.4.0, proto文件需要加上go_package,否则无法生成
+option go_package = "./market";
+
+message MarketReq {
+  string ip = 1;
+  string symbol = 2;
+}
+message SymbolThumbRes{
+  repeated CoinThumb list = 1;
+}
+message CoinThumb {
+  string symbol = 1;
+  double open = 2;
+  double high= 3;
+  double low = 4;
+  double close = 5;
+  double chg = 6;
+  double change = 7;
+  double volume = 8;
+  double turnover = 9;
+  double lastDayClose = 10;
+  double usdRate = 11;
+  double baseUsdRate = 12;
+  double zone = 13;
+  int64 datatime =14;
+  repeated double trend = 15;
+}
+
+service Market {
+  rpc FindSymbolThumbTrend(MarketReq) returns(SymbolThumbRes);
+}
