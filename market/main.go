@@ -4,7 +4,9 @@ import (
 	"flag"
 	"fmt"
 	"github.com/zeromicro/go-zero/core/logx"
+	"grpc-common/market/types/rate"
 	"market/internal/config"
+	"market/internal/server"
 	"market/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/conf"
@@ -26,12 +28,10 @@ func main() {
 
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
-	_ = svc.NewServiceContext(c)
+	ctx := svc.NewServiceContext(c)
 
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
-		//	register.RegisterRegisterServer(grpcServer, server.NewRegisterServer(ctx))
-		//	login.RegisterLoginServer(grpcServer, server.NewLoginServer(ctx))
-
+		rate.RegisterExchangeRateServer(grpcServer, server.NewExchangeRateServer(ctx))
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)
 		}

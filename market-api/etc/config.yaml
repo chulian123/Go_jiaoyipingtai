@@ -1,0 +1,9 @@
+Name: market-api
+Host: 127.0.0.1
+Port: 8889
+Prefix: "/market"
+MarketRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: market.rpc

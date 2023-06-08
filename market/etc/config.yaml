@@ -1,4 +1,4 @@
-Name: ucenter.rpc
+Name: market.rpc
 ListenOn: 127.0.0.1:8082
 Etcd:
   Hosts:

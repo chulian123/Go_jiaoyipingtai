@@ -4,16 +4,24 @@
 package server
 
 import (
+	"context"
+	"grpc-common/market/types/rate"
+	"market/internal/logic"
 	"market/internal/svc"
 )
 
-type RegisterServer struct {
+type ExchangeRateServer struct {
 	svcCtx *svc.ServiceContext
-	//register.UnimplementedRegisterServer
+	rate.UnimplementedExchangeRateServer
 }
 
-func NewRegisterServer(svcCtx *svc.ServiceContext) *RegisterServer {
-	return &RegisterServer{
+func (e *ExchangeRateServer) UsdRate(ctx context.Context, req *rate.RateReq) (*rate.RateRes, error) {
+	l := logic.NewExchangeRateLogic(ctx, e.svcCtx)
+	return l.UsdRate(req)
+}
+
+func NewExchangeRateServer(svcCtx *svc.ServiceContext) *ExchangeRateServer {
+	return &ExchangeRateServer{
 		svcCtx: svcCtx,
 	}
 }
