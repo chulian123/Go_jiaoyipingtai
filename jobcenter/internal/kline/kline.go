@@ -35,7 +35,7 @@ func (k *Kline) Do(period string) {
 	k.wg.Add(2)
 	//获取某个数据 币 BTC-USDT  ETH-USDT
 	go k.getKlineData("BTC-USDT", "BTC/USDT", period)
-	go k.getKlineData("ETH-USDT", "BTC/USDT", period)
+	go k.getKlineData("ETH-USDT", "ETH/USDT", period)
 	k.wg.Wait()
 }
 
@@ -71,13 +71,13 @@ func (k *Kline) getKlineData(instId string, symbol string, period string) {
 	if result.Code == "0" {
 		//代表成功
 		k.klineDomain.SaveBatch(result.Data, symbol, period)
-		//if "1m" == period {
-		//	//把这个最新的数据result.Data[0] 推送到market服务，推送到前端页面，实时进行变化
-		//	//->kafka->market kafka消费者进行数据消费-> 通过websocket通道发送给前端 ->前端更新数据
-		//	if len(result.Data) > 0 {
-		//		k.queueDomain.Send1mKline(result.Data[0], symbol)
-		//	}
-		//}
+		if "1m" == period {
+			//把这个最新的数据result.Data[0] 推送到market服务，推送到前端页面，实时进行变化
+			//	//->kafka->market kafka消费者进行数据消费-> 通过websocket通道发送给前端 ->前端更新数据
+			//	if len(result.Data) > 0 {
+			//		k.queueDomain.Send1mKline(result.Data[0], symbol)
+			//	}
+		}
 	}
 	k.wg.Done()
 	log.Println("==================End====================")

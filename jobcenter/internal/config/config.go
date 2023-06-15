@@ -8,4 +8,5 @@ import (
 type Config struct {
 	Okx   kline.OkxConfig
 	Mongo database.MongoConfig
+	kafka
 }
