@@ -159,21 +159,21 @@ type CoinThumb struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Symbol       string    `protobuf:"bytes,1,opt,name=symbol,proto3" json:"symbol,omitempty"`
-	Open         float64   `protobuf:"fixed64,2,opt,name=open,proto3" json:"open,omitempty"`
-	High         float64   `protobuf:"fixed64,3,opt,name=high,proto3" json:"high,omitempty"`
-	Low          float64   `protobuf:"fixed64,4,opt,name=low,proto3" json:"low,omitempty"`
-	Close        float64   `protobuf:"fixed64,5,opt,name=close,proto3" json:"close,omitempty"`
-	Chg          float64   `protobuf:"fixed64,6,opt,name=chg,proto3" json:"chg,omitempty"`
-	Change       float64   `protobuf:"fixed64,7,opt,name=change,proto3" json:"change,omitempty"`
-	Volume       float64   `protobuf:"fixed64,8,opt,name=volume,proto3" json:"volume,omitempty"`
-	Turnover     float64   `protobuf:"fixed64,9,opt,name=turnover,proto3" json:"turnover,omitempty"`
-	LastDayClose float64   `protobuf:"fixed64,10,opt,name=lastDayClose,proto3" json:"lastDayClose,omitempty"`
-	UsdRate      float64   `protobuf:"fixed64,11,opt,name=usdRate,proto3" json:"usdRate,omitempty"`
-	BaseUsdRate  float64   `protobuf:"fixed64,12,opt,name=baseUsdRate,proto3" json:"baseUsdRate,omitempty"`
-	Zone         float64   `protobuf:"fixed64,13,opt,name=zone,proto3" json:"zone,omitempty"`
-	DateTime     int64     `protobuf:"varint,14,opt,name=dateTime,proto3" json:"dateTime,omitempty"`
-	Trend        []float64 `protobuf:"fixed64,15,rep,packed,name=trend,proto3" json:"trend,omitempty"`
+	Symbol       string    `protobuf:"bytes,1,opt,name=symbol,proto3" json:"symbol"`
+	Open         float64   `protobuf:"fixed64,2,opt,name=open,proto3" json:"open"`
+	High         float64   `protobuf:"fixed64,3,opt,name=high,proto3" json:"high"`
+	Low          float64   `protobuf:"fixed64,4,opt,name=low,proto3" json:"low"`
+	Close        float64   `protobuf:"fixed64,5,opt,name=close,proto3" json:"close"`
+	Chg          float64   `protobuf:"fixed64,6,opt,name=chg,proto3" json:"chg"`
+	Change       float64   `protobuf:"fixed64,7,opt,name=change,proto3" json:"change"`
+	Volume       float64   `protobuf:"fixed64,8,opt,name=volume,proto3" json:"volume"`
+	Turnover     float64   `protobuf:"fixed64,9,opt,name=turnover,proto3" json:"turnover"`
+	LastDayClose float64   `protobuf:"fixed64,10,opt,name=lastDayClose,proto3" json:"lastDayClose"`
+	UsdRate      float64   `protobuf:"fixed64,11,opt,name=usdRate,proto3" json:"usdRate"`
+	BaseUsdRate  float64   `protobuf:"fixed64,12,opt,name=baseUsdRate,proto3" json:"baseUsdRate"`
+	Zone         float64   `protobuf:"fixed64,13,opt,name=zone,proto3" json:"zone"`
+	DateTime     int64     `protobuf:"varint,14,opt,name=dateTime,proto3" json:"dateTime"`
+	Trend        []float64 `protobuf:"fixed64,15,rep,packed,name=trend,proto3" json:"trend"`
 }
 
 func (x *CoinThumb) Reset() {

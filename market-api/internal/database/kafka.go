@@ -125,9 +125,10 @@ func (w *KafkaClient) sendKafka() {
 }
 
 // StartRead 启动Kafka消息接收
-func (k *KafkaClient) StartRead() {
+func (k *KafkaClient) StartRead(topic string) {
 	r := kafka.NewReader(kafka.ReaderConfig{
 		Brokers:  []string{k.c.Addr},
+		Topic:    topic,
 		GroupID:  k.c.ConsumerGroup,
 		MinBytes: 10e3, // 10KB
 		MaxBytes: 10e6, // 10MB

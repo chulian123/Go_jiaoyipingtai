@@ -21,11 +21,11 @@ func NewTask(ctx *svc.ServiceContext) *Task {
 
 func (t *Task) Run() {
 	t.s.Every(2).Second().Do(func() {
-		kline.NewKline(t.ctx.Config.Okx, t.ctx.MongoClient).Do("1m")
+		kline.NewKline(t.ctx.Config.Okx, t.ctx.MongoClient, t.ctx.KafkaClient).Do("1m")
 	}) //代表每两秒运行一次
 
 	t.s.Every(2).Hour().Do(func() {
-		kline.NewKline(t.ctx.Config.Okx, t.ctx.MongoClient).Do("1H")
+		kline.NewKline(t.ctx.Config.Okx, t.ctx.MongoClient, t.ctx.KafkaClient).Do("1H")
 	}) //代表每两秒运行一次
 }
 

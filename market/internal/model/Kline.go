@@ -35,12 +35,15 @@ func (k *Kline) ToCoinThumb(symbol string, end *Kline) *market.CoinThumb {
 	// 计算CoinThumb对象的Change字段，为当前K线数据的ClosePrice字段与end参数的ClosePrice字段之差
 	ct.Change = k.ClosePrice - end.ClosePrice
 	// 计算CoinThumb对象的Chg字段，为Change字段除以end参数的LowestPrice字段，并保留5位小数
-	ct.Chg = op.DivN(ct.Change, end.LowestPrice, 5)
+	ct.Chg = op.MulN(op.DivN(ct.Change, end.ClosePrice, 5), 100, 5)
 	// 设置CoinThumb对象的UsdRate字段为K线数据的ClosePrice字段
 	ct.UsdRate = k.ClosePrice
 	// 设置CoinThumb对象的BaseUsdRate字段为1
 	ct.BaseUsdRate = 1
 	// 返回转换后的CoinThumb对象
+
+	ct.DateTime = k.Time
+
 	return ct
 }
 

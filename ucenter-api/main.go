@@ -27,13 +27,6 @@ func main() {
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
 	//加入内容 解决跨域问题
-	//server := rest.MustNewServer(c.RestConf, rest.WithCustomCors(func(header http.Header) {
-	//	header.Set("Access-Control-Allow-Headers",
-	//		"DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,"+
-	//			"X-Requested-With,If-Modified-Since,"+
-	//			"Cache-Control,Content-Type,Authorization,"+
-	//			"token,x-auth-token")
-	//}, nil, "http://127.0.0.1:8080"))
 	server := rest.MustNewServer(c.RestConf, rest.WithCustomCors(func(header http.Header) {
 		header.Set("Access-Control-Allow-Headers", "DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization,token,x-auth-token")
 	}, nil, "http://localhost:8080"))

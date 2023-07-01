@@ -19,7 +19,7 @@ type MarketDomain struct {
 func (d MarketDomain) SymbolThumbTrend(coins []*model.ExchangeCoin) []*market.CoinThumb {
 	//业务模型  ==  rpc传输模型
 	coinThumbs := make([]*market.CoinThumb, len(coins))
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	for i, v := range coins {
 		form := tools.ZeroTime()

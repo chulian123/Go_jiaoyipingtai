@@ -33,13 +33,27 @@ func (l *MarketLogic) SymbolThumbTrend(req *types.MarketReq) (resp []*types.Coin
 	//return
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	thumbResp, err := l.svcCtx.MarketRpc.FindSymbolThumbTrend(ctx, &market.MarketReq{
-		Ip: req.Ip,
-	})
-	if err != nil {
-		return nil, err
+	var thumbs []*market.CoinThumb
+	thumb := l.svcCtx.Processor.GetThumb()
+	isCache := false
+	if thumb != nil {
+		switch thumb.(type) {
+		case []*market.CoinThumb:
+			thumbs = thumb.([]*market.CoinThumb)
+			isCache = true
+		}
 	}
-	if err := copier.Copy(&resp, thumbResp.List); err != nil {
+	if !isCache {
+		thumbResp, err := l.svcCtx.MarketRpc.FindSymbolThumbTrend(ctx, &market.MarketReq{
+			Ip: req.Ip,
+		})
+		if err != nil {
+			return nil, err
+		}
+		thumbs = thumbResp.List
+
+	}
+	if err := copier.Copy(&resp, thumbs); err != nil {
 		return nil, errors.New("数据格式有误")
 	}
 	for _, v := range resp {

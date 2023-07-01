@@ -29,6 +29,7 @@ type Kline struct {
 	wg          sync.WaitGroup
 	c           OkxConfig
 	klineDomain *domain.KlineDomain
+	queueDomain *domain.QueueDomain
 }
 
 func (k *Kline) Do(period string) {
@@ -64,28 +65,28 @@ func (k *Kline) getKlineData(instId string, symbol string, period string) {
 		return
 	}
 	log.Println("====开始获取数据======")
-	log.Println("instId:", instId, "period", period)
-	log.Println("result  kline data: ", string(resp))
-
+	//log.Println("instId:", instId, "period", period)
+	//log.Println("result  kline data: ", string(resp))
 	log.Println("==================执行存储mongo====================")
 	if result.Code == "0" {
 		//代表成功
 		k.klineDomain.SaveBatch(result.Data, symbol, period)
 		if "1m" == period {
 			//把这个最新的数据result.Data[0] 推送到market服务，推送到前端页面，实时进行变化
-			//	//->kafka->market kafka消费者进行数据消费-> 通过websocket通道发送给前端 ->前端更新数据
-			//	if len(result.Data) > 0 {
-			//		k.queueDomain.Send1mKline(result.Data[0], symbol)
-			//	}
+			//->kafka->market kafka消费者进行数据消费-> 通过websocket通道发送给前端 ->前端更新数据
+			if len(result.Data) > 0 {
+				k.queueDomain.Send1mKline(result.Data[0], symbol) //调用发送数据
+			}
 		}
 	}
 	k.wg.Done()
 	log.Println("==================End====================")
 }
 
-func NewKline(c OkxConfig, mongoClient *database.MongoClient) *Kline {
+func NewKline(c OkxConfig, mongoConfig *database.MongoClient, kakfacli *database.KafkaClient) *Kline {
 	return &Kline{
 		c:           c,
-		klineDomain: domain.NewKlineDomain(mongoClient),
+		klineDomain: domain.NewKlineDomain(mongoConfig),
+		queueDomain: domain.NewQueueDomain(kakfacli),
 	}
 }

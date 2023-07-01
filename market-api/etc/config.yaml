@@ -7,3 +7,8 @@ MarketRpc:
     Hosts:
       - 127.0.0.1:2379
     Key: market.rpc
+Kafka:
+  Addr: localhost:9092
+  WriteCap: 100
+  ReadCap: 100
+  ConsumerGroup: "kline1m-thumb-consumer"
