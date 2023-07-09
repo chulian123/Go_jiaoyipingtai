@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-//注册业务的逻辑代码
+//市场业务的逻辑代码
 
 type MarketLogic struct {
 	logx.Logger
@@ -52,6 +52,28 @@ func (l *MarketLogic) SymbolThumbTrend(req *types.MarketReq) (resp []*types.Coin
 		}
 		thumbs = thumbResp.List
 
+	}
+	if err := copier.Copy(&resp, thumbs); err != nil {
+		return nil, errors.New("数据格式有误")
+	}
+	for _, v := range resp {
+		if v.Trend == nil {
+			v.Trend = []float64{}
+		}
+	}
+	return
+}
+
+func (l *MarketLogic) SymbolThumb(req *types.MarketReq) (resp []*types.CoinThumbResp, err error) {
+	//ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	//defer cancel()
+	var thumbs []*market.CoinThumb
+	thumb := l.svcCtx.Processor.GetThumb()
+	if thumb != nil {
+		switch thumb.(type) {
+		case []*market.CoinThumb:
+			thumbs = thumb.([]*market.CoinThumb)
+		}
 	}
 	if err := copier.Copy(&resp, thumbs); err != nil {
 		return nil, errors.New("数据格式有误")
