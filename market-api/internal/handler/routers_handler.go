@@ -17,6 +17,8 @@ func RegisterHandlers(r *Routers, serverCtx *svc.ServiceContext) {
 	marketGroup.Post("/symbol-thumb-trend", market.SymbolThumbTrend)
 	marketGroup.Post("/symbol-thumb", market.SymbolThumb)
 	marketGroup.Post("/symbol-info", market.SymbolInfo)
+	marketGroup.Post("/coin-info", market.CoinInfo)
+	marketGroup.Get("/history", market.History)
 
 	wsGroup := r.Group()
 	wsGroup.GetNoPrefix("/socket.io", nil)

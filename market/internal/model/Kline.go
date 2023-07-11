@@ -6,7 +6,7 @@ import (
 )
 
 type Kline struct {
-	Period       string  `bson:"period,omitempty"`
+	Period       string  `bson:"period,omitempty" `
 	OpenPrice    float64 `bson:"openPrice,omitempty"`
 	HighestPrice float64 `bson:"highestPrice,omitempty"`
 	LowestPrice  float64 `bson:"lowestPrice,omitempty"`

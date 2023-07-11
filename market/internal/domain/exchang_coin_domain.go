@@ -2,6 +2,7 @@ package domain
 
 import (
 	"context"
+	"errors"
 	"github.com/zeromicro/go-zero/core/logx"
 	"market/internal/dao"
 	"market/internal/model"
@@ -27,4 +28,15 @@ func (d *ExchangeCoinDomain) FindVisible(ctx context.Context) []*model.ExchangeC
 		return []*model.ExchangeCoin{}
 	}
 	return list
+}
+
+func (d *ExchangeCoinDomain) FindByFindSymbol(ctx context.Context, symbol string) (*model.ExchangeCoin, error) {
+	exChangeCoin, err := d.ExchangeCoinRepo.FindByFindSymbol(ctx, symbol)
+	if err != nil {
+		return nil, err
+	}
+	if exChangeCoin == nil {
+		return nil, errors.New("交易对不存在")
+	}
+	return exChangeCoin, err
 }

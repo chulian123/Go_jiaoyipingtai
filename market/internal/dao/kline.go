@@ -59,25 +59,31 @@ func (k *KlineDao) FindBySymbol(ctx context.Context, symbol, period string, coun
 	}
 	return
 }
-func (k *KlineDao) FindBySymbolTime(ctx context.Context, symbol, period string, from, end int64) (list []*model.Kline, err error) {
+func (k *KlineDao) FindBySymbolTime(ctx context.Context, symbol, period string, from, end int64, s string) (list []*model.Kline, err error) {
 	//按照时间范围来查询
-
+	//安装时间范围 查询
 	mk := &model.Kline{}
+	sortInt := -1
+	if "asc" == s {
+		sortInt = 1
+	}
 	collection := k.db.Collection(mk.Table(symbol, period))
-	cur, err := collection.Find(ctx, bson.D{{"time",
-		bson.D{{"$gte", from}, {"$lte", end}}}}, //匹配"time"字段在指定范围内的文档。其中，from和end是时间范围的起始和结束值
+	cur, err := collection.Find(ctx,
+		bson.D{{"time", bson.D{{"$gte", from}, {"$lte", end}}}},
 		&options.FindOptions{
-			Sort: bson.D{{"time", -1}}, //bson.D{{"time", -1}}：指定按照"time"字段进行降序排序
+			Sort: bson.D{{"time", sortInt}},
 		})
 	if err != nil {
 		return nil, err
 	}
+
 	err = cur.All(ctx, &list)
 	if err != nil {
 		return nil, err
 	}
 	return
 }
+
 func NewKlineDao(db *mongo.Database) *KlineDao {
 	return &KlineDao{
 		db: db,

@@ -31,7 +31,7 @@ func (l *MarketLogic) SymbolThumbTrend(req *types.MarketReq) (resp []*types.Coin
 	//	return nil, err
 	//}
 	//return
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(l.ctx, 5*time.Second)
 	defer cancel()
 	var thumbs []*market.CoinThumb
 	thumb := l.svcCtx.Processor.GetThumb()
@@ -84,6 +84,69 @@ func (l *MarketLogic) SymbolThumb(req *types.MarketReq) (resp []*types.CoinThumb
 		}
 	}
 	return
+}
+
+func (l *MarketLogic) SymbolInfo(req types.MarketReq) (resp []*types.ExchangeCoinResp, err error) {
+	ctx, cancel := context.WithTimeout(l.ctx, 5*time.Second)
+	defer cancel()
+	esResp, err := l.svcCtx.MarketRpc.FindSymbolInfo(ctx, &market.MarketReq{
+		Ip:     req.Ip,
+		Symbol: req.Symbol,
+	})
+	if err != nil {
+		return nil, err
+	}
+	//resp = &types.ExchangeCoinResp{}
+	if err := copier.Copy(&resp, esResp); err != nil {
+		return nil, err
+	}
+
+	return
+}
+
+func (l *MarketLogic) CoinInfo(req *types.MarketReq) (*types.Coin, error) {
+	ctx, cancel := context.WithTimeout(l.ctx, 5*time.Second)
+	defer cancel()
+	coin, err := l.svcCtx.MarketRpc.FindCoinInfo(ctx, &market.MarketReq{
+		Unit: req.Unit,
+	})
+	if err != nil {
+		return nil, err
+	}
+	ec := &types.Coin{}
+	if err := copier.Copy(&ec, coin); err != nil {
+		return nil, errors.New("数据格式有误")
+	}
+	return ec, nil
+}
+
+func (l *MarketLogic) History(req *types.MarketReq) (*types.HistoryKline, error) {
+	ctx, cancel := context.WithTimeout(l.ctx, 10*time.Second)
+	defer cancel()
+	historyKline, err := l.svcCtx.MarketRpc.HistoryKline(ctx, &market.MarketReq{
+		Symbol:     req.Symbol,
+		From:       req.From,
+		To:         req.To,
+		Resolution: req.Resolution,
+	})
+	if err != nil {
+		return nil, err
+	}
+	histories := historyKline.List
+	var list = make([][]any, len(histories))
+	for i, v := range histories {
+		content := make([]any, 6)
+		content[0] = v.Time
+		content[1] = v.Open
+		content[2] = v.High
+		content[3] = v.Low
+		content[4] = v.Close
+		content[5] = v.Volume
+		list[i] = content
+	}
+	return &types.HistoryKline{
+		List: list,
+	}, nil
 }
 
 func NewMarketLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MarketLogic {

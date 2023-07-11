@@ -6,15 +6,15 @@ import (
 )
 
 type Kline struct {
-	Period       string  `bson:"period,omitempty"`
-	OpenPrice    float64 `bson:"openPrice,omitempty"`
-	HighestPrice float64 `bson:"highestPrice,omitempty"`
-	LowestPrice  float64 `bson:"lowestPrice,omitempty"`
-	ClosePrice   float64 `bson:"closePrice,omitempty"`
-	Time         int64   `bson:"time,omitempty"`
-	Count        float64 `bson:"count,omitempty"`    //成交笔数
-	Volume       float64 `bson:"volume,omitempty"`   //成交量
-	Turnover     float64 `bson:"turnover,omitempty"` //成交额
+	Period       string  `bson:"period,omitempty" json:"period"`
+	OpenPrice    float64 `bson:"openPrice,omitempty" json:"openPrice"`
+	HighestPrice float64 `bson:"highestPrice,omitempty" json:"highestPrice"`
+	LowestPrice  float64 `bson:"lowestPrice,omitempty" json:"lowestPrice"`
+	ClosePrice   float64 `bson:"closePrice,omitempty" json:"closePrice"`
+	Time         int64   `bson:"time,omitempty" json:"time"`
+	Count        float64 `bson:"count,omitempty" json:"count"`       //成交笔数
+	Volume       float64 `bson:"volume,omitempty" json:"volume"`     //成交量
+	Turnover     float64 `bson:"turnover,omitempty" json:"turnover"` //成交额
 }
 
 func (k *Kline) ToCoinThumb(symbol string, ct *market.CoinThumb) *market.CoinThumb {
@@ -63,4 +63,22 @@ func (k *Kline) InitCoinThumb(symbol string) *market.CoinThumb {
 	ct.Trend = make([]float64, 0)
 
 	return ct
+}
+
+type CoinThumb struct {
+	Symbol       string    `protobuf:"bytes,1,opt,name=symbol,proto3" json:"symbol"`
+	Open         float64   `protobuf:"fixed64,2,opt,name=open,proto3" json:"open"`
+	High         float64   `protobuf:"fixed64,3,opt,name=high,proto3" json:"high"`
+	Low          float64   `protobuf:"fixed64,4,opt,name=low,proto3" json:"low"`
+	Close        float64   `protobuf:"fixed64,5,opt,name=close,proto3" json:"close"`
+	Chg          float64   `protobuf:"fixed64,6,opt,name=chg,proto3" json:"chg"`
+	Change       float64   `protobuf:"fixed64,7,opt,name=change,proto3" json:"change"`
+	Volume       float64   `protobuf:"fixed64,8,opt,name=volume,proto3" json:"volume"`
+	Turnover     float64   `protobuf:"fixed64,9,opt,name=turnover,proto3" json:"turnover"`
+	LastDayClose float64   `protobuf:"fixed64,10,opt,name=lastDayClose,proto3" json:"lastDayClose"`
+	UsdRate      float64   `protobuf:"fixed64,11,opt,name=usdRate,proto3" json:"usdRate"`
+	BaseUsdRate  float64   `protobuf:"fixed64,12,opt,name=baseUsdRate,proto3" json:"baseUsdRate"`
+	Zone         float64   `protobuf:"fixed64,13,opt,name=zone,proto3" json:"zone"`
+	DateTime     int64     `protobuf:"varint,14,opt,name=dateTime,proto3" json:"dateTime"`
+	Trend        []float64 `protobuf:"fixed64,15,rep,packed,name=trend,proto3" json:"trend"`
 }

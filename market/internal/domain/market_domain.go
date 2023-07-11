@@ -24,7 +24,7 @@ func (d MarketDomain) SymbolThumbTrend(coins []*model.ExchangeCoin) []*market.Co
 	for i, v := range coins {
 		form := tools.ZeroTime()
 		end := time.Now().UnixMilli()
-		klines, err := d.klineRepo.FindBySymbolTime(ctx, v.Symbol, "1H", form, end)
+		klines, err := d.klineRepo.FindBySymbolTime(ctx, v.Symbol, "1H", form, end, "")
 		if err != nil {
 			//如果当我们读取不到数据时就 通过工具类给她一个默认值先
 			coinThumbs[i] = model.DefaultCoinThu(v.Symbol)
@@ -66,6 +66,25 @@ func (d MarketDomain) SymbolThumbTrend(coins []*model.ExchangeCoin) []*market.Co
 		coinThumbs[i] = thumb
 	}
 	return coinThumbs
+}
+
+func (d *MarketDomain) HistoryKline(ctx context.Context, symbol string, from int64, to int64, period string) ([]*market.History, error) {
+	klines, err := d.klineRepo.FindBySymbolTime(ctx, symbol, period, from, to, "asc")
+	if err != nil {
+		return nil, err
+	}
+	list := make([]*market.History, len(klines))
+	for i, v := range klines {
+		h := &market.History{}
+		h.Time = v.Time
+		h.Open = v.OpenPrice
+		h.High = v.HighestPrice
+		h.Low = v.LowestPrice
+		h.Volume = v.Volume
+		h.Close = v.ClosePrice
+		list[i] = h
+	}
+	return list, nil
 }
 
 func NewMarketDomain(mongoClient *database.MongoClient) *MarketDomain {

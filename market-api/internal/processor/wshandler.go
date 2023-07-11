@@ -2,6 +2,7 @@ package processor
 
 import (
 	"encoding/json"
+	"github.com/jinzhu/copier"
 	"github.com/zeromicro/go-zero/core/logx"
 	"grpc-common/market/types/market"
 	"market-api/internal/model"
@@ -25,8 +26,14 @@ func (w *WebSocketHandler) HandleKLine(symbol string, kline *model.Kline, thumpM
 		kline.InitCoinThumb(symbol)
 	}
 	coinThumb := kline.ToCoinThumb(symbol, thumb)
+	result := &model.CoinThumb{}
+	copier.Copy(result, coinThumb)
+	logx.Info("执行了/topic/market/thumb")
 	marshal, _ := json.Marshal(coinThumb)
 	w.wsServer.BroadcastToNamespace("/", "/topic/market/thumb", string(marshal))
+	logx.Info("执行了//topic/market/kline/")
+	bytes, _ := json.Marshal(kline)
+	w.wsServer.BroadcastToNamespace("/", "/topic/market/kline/"+symbol, string(bytes))
 
 	logx.Info("================WebsocketHandler end=======================")
 }

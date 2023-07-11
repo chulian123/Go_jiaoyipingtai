@@ -3,7 +3,7 @@ package code_gen
 import "testing"
 
 func TestGUnStruct(t *testing.T) {
-	GenModel("Member", "Menber")
+	GenModel("coin", "Coin")
 }
 
 func TestGenRpc(t *testing.T) {

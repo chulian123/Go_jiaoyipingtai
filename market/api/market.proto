@@ -31,4 +31,5 @@ message CoinThumb {
 
 service Market {
   rpc FindSymbolThumbTrend(MarketReq) returns(SymbolThumbRes);
+
 }
