@@ -46,3 +46,7 @@ func (r *Routers) Group() *Routers {
 		server: r.server,
 	}
 }
+
+func (r *Routers) Use(middle ...rest.Middleware) {
+	r.middlewares = append(r.middlewares, middle...)
+}

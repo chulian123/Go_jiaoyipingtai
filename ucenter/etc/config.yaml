@@ -15,3 +15,9 @@ Captcha:
 JWT:
   AccessSecret: "!@#$mscoin"
   AccessExpire: 604800
+MarketRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: market.rpc
+  NonBlock: true

@@ -6,7 +6,7 @@ import (
 	"grpc-common/ucenter/types/register"
 	"mscoin-common/tools"
 	"time"
-	"ucenter/domain"
+	domain2 "ucenter/internal/domain"
 	"ucenter/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -18,8 +18,8 @@ type RegisterLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	CaptchaDomain *domain.CaptchaDomain
-	MemberDomain  *domain.MemberDomain
+	CaptchaDomain *domain2.CaptchaDomain
+	MemberDomain  *domain2.MemberDomain
 }
 
 func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RegisterLogic {
@@ -27,8 +27,8 @@ func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Register
 		ctx:           ctx,
 		svcCtx:        svcCtx,
 		Logger:        logx.WithContext(ctx),
-		CaptchaDomain: domain.NewCaptchaDomain(),
-		MemberDomain:  domain.NewMemberDomain(svcCtx.Db), //传入数据库链接
+		CaptchaDomain: domain2.NewCaptchaDomain(),
+		MemberDomain:  domain2.NewMemberDomain(svcCtx.Db), //传入数据库链接
 	}
 }
 
