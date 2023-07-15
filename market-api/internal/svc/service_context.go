@@ -18,13 +18,11 @@ type ServiceContext struct {
 
 func NewServiceContext(c config.Config, server *ws.WebsocketServer) *ServiceContext {
 	//初始化processor
-	kafkacli := database.NewKafkaClient(c.Kafka)
+	kafaCli := database.NewKafkaClient(c.Kafka)
 	market := mclient.NewMarket(zrpc.MustNewClient(c.MarketRpc))
-
-	defaultProcessor := processor.NewDefaultProcessor(kafkacli)
+	defaultProcessor := processor.NewDefaultProcessor(kafaCli)
 	defaultProcessor.Init(market)
-	defaultProcessor.AddHandler(processor.NewWebSocketHandler(server))
-
+	defaultProcessor.AddHandler(processor.NewWebsocketHandler(server))
 	return &ServiceContext{
 		Config:          c,
 		ExchangeRateRpc: mclient.NewExchangeRate(zrpc.MustNewClient(c.MarketRpc)),

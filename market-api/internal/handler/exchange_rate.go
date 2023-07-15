@@ -10,8 +10,6 @@ import (
 	"net/http"
 )
 
-//注册的handlər
-
 type ExchangeRateHandler struct {
 	svcCtx *svc.ServiceContext
 }
@@ -24,7 +22,7 @@ func NewExchangeRateHandler(svcCtx *svc.ServiceContext) *ExchangeRateHandler {
 
 func (h *ExchangeRateHandler) UsdRate(w http.ResponseWriter, r *http.Request) {
 	var req types.RateRequest
-	if err := httpx.ParsePath(r, &req); err != nil { //ParsePath parses the symbols reside in url path. Like http://localhost/bag/:name
+	if err := httpx.ParsePath(r, &req); err != nil {
 		httpx.ErrorCtx(r.Context(), w, err)
 		return
 	}

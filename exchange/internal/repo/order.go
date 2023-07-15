@@ -1,0 +1,17 @@
+package repo
+
+import (
+	"context"
+	"exchange/internal/model"
+	"mscoin-common/msdb"
+)
+
+type ExchangeOrderRepo interface {
+	FindOrderHistory(ctx context.Context, symbol string, page int64, size int64, memberId int64) (list []*model.ExchangeOrder, total int64, err error)
+	FindOrderCurrent(ctx context.Context, symbol string, page int64, size int64, memberId int64) (list []*model.ExchangeOrder, total int64, err error)
+	FindCurrentTradingCount(ctx context.Context, id int64, symbol string, direction int) (int64, error)
+	Save(ctx context.Context, conn msdb.DbConn, order *model.ExchangeOrder) error
+	FindOrderByOrderId(ctx context.Context, orderId string) (*model.ExchangeOrder, error)
+	UpdateStatusCancel(ctx context.Context, orderId string) error
+	UpdateOrderStatusTrading(ctx context.Context, orderId string) error
+}

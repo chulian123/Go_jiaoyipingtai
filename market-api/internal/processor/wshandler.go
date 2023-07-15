@@ -9,37 +9,36 @@ import (
 	"market-api/internal/ws"
 )
 
-type WebSocketHandler struct {
+type WebsocketHandler struct {
 	wsServer *ws.WebsocketServer
 }
 
-func (w *WebSocketHandler) HandleTrade(symbol string, data []byte) {
+func (w *WebsocketHandler) HandleTrade(symbol string, data []byte) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (w *WebSocketHandler) HandleKLine(symbol string, kline *model.Kline, thumpMap map[string]*market.CoinThumb) {
+func (w *WebsocketHandler) HandleKLine(symbol string, kline *model.Kline, thumbMap map[string]*market.CoinThumb) {
 	logx.Info("================WebsocketHandler Start=======================")
 	logx.Info("symbol:", symbol)
-	thumb := thumpMap[symbol]
+	thumb := thumbMap[symbol]
 	if thumb == nil {
-		kline.InitCoinThumb(symbol)
+		thumb = kline.InitCoinThumb(symbol)
 	}
 	coinThumb := kline.ToCoinThumb(symbol, thumb)
 	result := &model.CoinThumb{}
 	copier.Copy(result, coinThumb)
-	logx.Info("执行了/topic/market/thumb")
-	marshal, _ := json.Marshal(coinThumb)
+	marshal, _ := json.Marshal(result)
 	w.wsServer.BroadcastToNamespace("/", "/topic/market/thumb", string(marshal))
-	logx.Info("执行了//topic/market/kline/")
+
 	bytes, _ := json.Marshal(kline)
 	w.wsServer.BroadcastToNamespace("/", "/topic/market/kline/"+symbol, string(bytes))
 
-	logx.Info("================WebsocketHandler end=======================")
+	logx.Info("================WebsocketHandler End=======================")
 }
 
-func NewWebSocketHandler(wsServer *ws.WebsocketServer) *WebSocketHandler {
-	return &WebSocketHandler{
+func NewWebsocketHandler(wsServer *ws.WebsocketServer) *WebsocketHandler {
+	return &WebsocketHandler{
 		wsServer: wsServer,
 	}
 }

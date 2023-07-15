@@ -5,10 +5,6 @@ import (
 	"reflect"
 )
 
-//总体上，该代码利用反射机制遍历结构体的字段，并根据字段类型设置默认值。
-//在每个字段类型对应的函数中，创建一个具有默认值的变量，然后使用reflect.ValueOf()将其转换为反射值，
-//并返回该反射值，以便在Default函数中设置结构体字段的默认值。
-
 func Default(data any) error {
 	typeOf := reflect.TypeOf(data)
 	valueOf := reflect.ValueOf(data)
@@ -50,8 +46,6 @@ func defaultString() reflect.Value {
 	var i = ""
 	return reflect.ValueOf(i)
 }
-
-//bug 记录 这里返回值不能为负数 不然会导致gorm框架注册不能正常insert数据
 
 func defaultInt() reflect.Value {
 	var i int = 0

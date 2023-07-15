@@ -1,15 +1,14 @@
 package tools
 
 import (
+	"fmt"
 	"math/rand"
-	"strconv"
-	"time"
 )
 
-// Rand4Code 生辰验证码函数
-func Rand4Code() string {
-	rand.NewSource(time.Now().UnixNano())
-	cod := rand.Intn(9999) + 1000
-	code := strconv.Itoa(cod)
-	return code
+func Rand4Num() string {
+	intn := rand.Intn(9999)
+	if intn < 1000 {
+		intn = intn + 1000
+	}
+	return fmt.Sprintf("%d", intn)
 }

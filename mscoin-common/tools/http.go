@@ -10,7 +10,6 @@ import (
 	"time"
 )
 
-// Post 人机验证
 func Post(url string, params any) ([]byte, error) {
 	ctx, cancelFunc := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancelFunc()
@@ -34,7 +33,6 @@ func Post(url string, params any) ([]byte, error) {
 	return rspBody, nil
 }
 
-// GetWithHeader 带代理和header的http get请求工具类
 func GetWithHeader(path string, m map[string]string, proxy string) ([]byte, error) {
 	ctx, cancelFunc := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancelFunc()

@@ -4,7 +4,7 @@ import (
     "context"
     "github.com/zeromicro/go-zero/zrpc"
     "google.golang.org/grpc"
-    "mscoin/grpc-common/{{.RpcCommon.ModuleName}}/{{.RpcCommon.GrpcPackage}}"
+    "grpc-common/{{.RpcCommon.GrpcPackage}}/types/{{.RpcCommon.GrpcPackage}}"
 )
 
 type (
@@ -34,4 +34,3 @@ func (m *default{{$.RpcCommon.ServiceName}}) {{$value.FunName}}(ctx context.Cont
     return client.{{$value.FunName}}(ctx, in, opts...)
 }
 {{- end}}
-

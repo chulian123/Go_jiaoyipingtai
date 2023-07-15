@@ -1,0 +1,17 @@
+Name: exchange-api
+Host: 127.0.0.1
+Port: 8890
+Prefix: "/exchange"
+JWT:
+  AccessSecret: "!@#$mscoin"
+  AccessExpire: 604800
+ExchangeRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: exchange.rpc
+Kafka:
+  Addr: localhost:9092
+  WriteCap: 100
+  ReadCap: 100
+  ConsumerGroup: "kline1m-thumb-consumer"

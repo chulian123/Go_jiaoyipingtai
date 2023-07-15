@@ -3,11 +3,12 @@ package logic
 import (
 	"context"
 	"github.com/jinzhu/copier"
-	"github.com/zeromicro/go-zero/core/logx"
 	"grpc-common/market/types/market"
 	"grpc-common/ucenter/types/asset"
 	"ucenter/internal/domain"
 	"ucenter/internal/svc"
+
+	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type AssetLogic struct {

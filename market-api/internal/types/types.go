@@ -11,8 +11,8 @@ type RateResponse struct {
 }
 
 type MarketReq struct {
-	Ip         string `json:"ip,optional" form:"ip,optional"`
-	Symbol     string `json:"symbol,optional" form:"symbol,optional"`
+	Ip         string `json:"ip,optional"`
+	Symbol     string `json:"symbol,optional" form:"symbol,optional" path:"symbol,optional"`
 	Unit       string `json:"unit,optional" form:"unit,optional"`
 	From       int64  `json:"from,optional" form:"from,optional"`
 	To         int64  `json:"to,optional" form:"to,optional"`
@@ -38,7 +38,7 @@ type CoinThumbResp struct {
 
 type ExchangeCoinResp struct {
 	Id                 int64   `json:"id"`
-	Symbol             string  `json:"symbol"`             // 交易币种名称，格式：BTC/USDT
+	Symbol             string  `json:"symbol"`             // 交易对币种名称，格式：BTC/USDT
 	BaseCoinScale      int64   `json:"baseCoinScale"`      // 基币小数精度
 	BaseSymbol         string  `json:"baseSymbol"`         // 结算币种符号，如USDT
 	CoinScale          int64   `json:"coinScale"`          // 交易币小数精度
@@ -112,5 +112,5 @@ type Coin struct {
 //	 double volume = 6;
 //	}
 type HistoryKline struct {
-	List [][]any //二维切片
+	List [][]any
 }

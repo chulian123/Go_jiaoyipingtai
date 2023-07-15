@@ -32,7 +32,6 @@ type ExchangeCoin struct {
 	Zone             int64   `gorm:"column:zone"`               // 交易区域
 }
 
-// 对应的数据库操作名字
 func (*ExchangeCoin) TableName() string {
 	return "exchange_coin"
 }

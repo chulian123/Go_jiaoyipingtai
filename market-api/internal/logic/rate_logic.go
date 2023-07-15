@@ -9,8 +9,6 @@ import (
 	"time"
 )
 
-//注册业务的逻辑代码
-
 type ExchangeRateLogic struct {
 	logx.Logger
 	ctx    context.Context

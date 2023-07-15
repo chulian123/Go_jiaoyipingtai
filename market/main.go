@@ -6,7 +6,6 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"grpc-common/market/types/market"
 	"grpc-common/market/types/rate"
-
 	"market/internal/config"
 	"market/internal/server"
 	"market/internal/svc"
@@ -18,16 +17,12 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-var configFile = flag.String("f", "etc/config.yaml", "the config file")
+var configFile = flag.String("f", "etc/conf.yaml", "the config file")
 
 func main() {
 	flag.Parse()
-	//日志的格式替换
-	logx.MustSetup(logx.LogConf{
-		Stat:     false,
-		Encoding: "plain",
-	})
-
+	//日志的打印格式替换一下
+	logx.MustSetup(logx.LogConf{Stat: false, Encoding: "plain"})
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
 	ctx := svc.NewServiceContext(c)
@@ -35,6 +30,7 @@ func main() {
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
 		rate.RegisterExchangeRateServer(grpcServer, server.NewExchangeRateServer(ctx))
 		market.RegisterMarketServer(grpcServer, server.NewMarketServer(ctx))
+
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)
 		}

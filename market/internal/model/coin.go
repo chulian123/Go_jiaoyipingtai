@@ -1,37 +1,36 @@
 package model
 
 type Coin struct {
-	Id                int     `json:"id" from:"id"`
-	Name              string  `json:"name" from:"name"`
-	CanAutoWithdraw   int     `json:"canAutoWithdraw" from:"canAutoWithdraw"`
-	CanRecharge       int     `json:"canRecharge" from:"canRecharge"`
-	CanTransfer       int     `json:"canTransfer" from:"canTransfer"`
-	CanWithdraw       int     `json:"canWithdraw" from:"canWithdraw"`
-	CnyRate           float64 `json:"cnyRate" from:"cnyRate"`
-	EnableRpc         int     `json:"enableRpc" from:"enableRpc"`
-	IsPlatformCoin    int     `json:"isPlatformCoin" from:"isPlatformCoin"`
-	MaxTxFee          float64 `json:"maxTxFee" from:"maxTxFee"`
-	MaxWithdrawAmount float64 `json:"maxWithdrawAmount" from:"maxWithdrawAmount"`
-	MinTxFee          float64 `json:"minTxFee" from:"minTxFee"`
-	MinWithdrawAmount float64 `json:"minWithdrawAmount" from:"minWithdrawAmount"`
-	NameCn            string  `json:"nameCn" from:"nameCn"`
-	Sort              int     `json:"sort" from:"sort"`
-	Status            int     `json:"status" from:"status"`
-	Unit              string  `json:"unit" from:"unit"`
-	UsdRate           float64 `json:"usdRate" from:"usdRate"`
-	WithdrawThreshold float64 `json:"withdrawThreshold" from:"withdrawThreshold"`
-	HasLegal          int     `json:"hasLegal" from:"hasLegal"`
-	ColdWalletAddress string  `json:"coldWalletAddress" from:"coldWalletAddress"`
-	MinerFee          float64 `json:"minerFee" from:"minerFee"`
-	WithdrawScale     int     `json:"withdrawScale" from:"withdrawScale"`
-	AccountType       int     `json:"accountType" from:"accountType"`
-	DepositAddress    string  `json:"depositAddress" from:"depositAddress"`
-	Infolink          string  `json:"infolink" from:"infolink"`
-	Information       string  `json:"information" from:"information"`
-	MinRechargeAmount float64 `json:"minRechargeAmount" from:"minRechargeAmount"`
+	Id                int     `gorm:"column:id"`
+	Name              string  `gorm:"column:name"`
+	CanAutoWithdraw   int     `gorm:"column:can_auto_withdraw"`
+	CanRecharge       int     `gorm:"column:can_recharge"`
+	CanTransfer       int     `gorm:"column:can_transfer"`
+	CanWithdraw       int     `gorm:"column:can_withdraw"`
+	CnyRate           float64 `gorm:"column:cny_rate"`
+	EnableRpc         int     `gorm:"column:enable_rpc"`
+	IsPlatformCoin    int     `gorm:"column:is_platform_coin"`
+	MaxTxFee          float64 `gorm:"column:max_tx_fee"`
+	MaxWithdrawAmount float64 `gorm:"column:max_withdraw_amount"`
+	MinTxFee          float64 `gorm:"column:min_tx_fee"`
+	MinWithdrawAmount float64 `gorm:"column:min_withdraw_amount"`
+	NameCn            string  `gorm:"column:name_cn"`
+	Sort              int     `gorm:"column:sort"`
+	Status            int     `gorm:"column:status"`
+	Unit              string  `gorm:"column:unit"`
+	UsdRate           float64 `gorm:"column:usd_rate"`
+	WithdrawThreshold float64 `gorm:"column:withdraw_threshold"`
+	HasLegal          int     `gorm:"column:has_legal"`
+	ColdWalletAddress string  `gorm:"column:cold_wallet_address"`
+	MinerFee          float64 `gorm:"column:miner_fee"`
+	WithdrawScale     int     `gorm:"column:withdraw_scale"`
+	AccountType       int     `gorm:"column:account_type"`
+	DepositAddress    string  `gorm:"column:deposit_address"`
+	Infolink          string  `gorm:"column:infolink"`
+	Information       string  `gorm:"column:information"`
+	MinRechargeAmount float64 `gorm:"column:min_recharge_amount"`
 }
 
 func (*Coin) TableName() string {
 	return "coin"
-
 }

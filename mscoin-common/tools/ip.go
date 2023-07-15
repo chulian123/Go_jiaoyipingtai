@@ -5,7 +5,6 @@ import (
 	"net/http"
 )
 
-// GetRemoteClientIp 获取ip
 func GetRemoteClientIp(r *http.Request) string {
 	remoteIp := r.RemoteAddr
 

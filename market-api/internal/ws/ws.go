@@ -69,10 +69,8 @@ func (ws *WebsocketServer) ServerHandler(next http.Handler) http.Handler {
 		logx.Info("==========================", path)
 		if strings.HasPrefix(path, ws.path) {
 			//进行我们的处理
-			logx.Info("信息为真")
 			ws.server.ServeHTTP(w, r)
 		} else {
-			logx.Info("信息为假")
 			next.ServeHTTP(w, r)
 		}
 	})

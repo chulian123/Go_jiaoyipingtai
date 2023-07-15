@@ -8,7 +8,7 @@ import (
 )
 
 func TestTime(t *testing.T) {
-	milli := time.UnixMilli(1687968000000)
+	milli := time.UnixMilli(1678377600000)
 	fmt.Println(milli.String())
 	zeroTime := ZeroTime()
 	unixMilli := time.UnixMilli(zeroTime)
@@ -16,16 +16,16 @@ func TestTime(t *testing.T) {
 }
 
 func TestContext(t *testing.T) {
+	//上下文的使用  对追踪非常有用
 	ctx := context.Background()
-	ctx = context.WithValue(ctx, "tracedID", "AAAA")
-	bb(ctx)
+	ctx = context.WithValue(ctx, "traceId", "AAA")
+	BB(ctx)
 }
 
-func bb(ctx context.Context) {
+func BB(ctx context.Context) {
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
-	value := ctx.Value("tracedID")
-	fmt.Println(value)
+	value := ctx.Value("traceId")
 	ctx = context.WithValue(ctx, "traceId", fmt.Sprintf("%v", value)+"_BBB")
 	CC(ctx)
 }

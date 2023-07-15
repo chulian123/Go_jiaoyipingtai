@@ -14,6 +14,7 @@ type MongoConfig struct {
 	Password string
 	DataBase string
 }
+
 type MongoClient struct {
 	cli *mongo.Client
 	Db  *mongo.Database

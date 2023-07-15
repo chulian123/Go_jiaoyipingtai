@@ -1,6 +1,8 @@
 package model
 
-import "mscoin-common/tools"
+import (
+	"mscoin-common/tools"
+)
 
 type Kline struct {
 	Period       string  `bson:"period,omitempty"`

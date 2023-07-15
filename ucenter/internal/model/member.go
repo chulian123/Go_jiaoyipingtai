@@ -68,7 +68,7 @@ type Member struct {
 }
 
 func (*Member) TableName() string {
-	return "Member"
+	return "member"
 }
 
 const (

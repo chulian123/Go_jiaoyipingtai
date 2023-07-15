@@ -20,7 +20,7 @@ type Kline struct {
 func (k *Kline) ToCoinThumb(symbol string, ct *market.CoinThumb) *market.CoinThumb {
 	isSame := false
 	if ct.Symbol == symbol && ct.DateTime == k.Time {
-		//认为是同一个数据
+		//认为这是同一个数据
 		isSame = true
 	}
 	if !isSame {
@@ -61,7 +61,7 @@ func (k *Kline) InitCoinThumb(symbol string) *market.CoinThumb {
 	ct.UsdRate = k.ClosePrice
 	ct.BaseUsdRate = 1
 	ct.Trend = make([]float64, 0)
-
+	ct.DateTime = k.Time
 	return ct
 }
 

@@ -6,8 +6,6 @@ import (
 	"mscoin-common/tools"
 )
 
-//服务器对前端认证 的二次认证
-
 type vaptchaReq struct {
 	Id        string `json:"id"`
 	Secretkey string `json:"secretkey"`
@@ -24,8 +22,14 @@ type vaptchaRsp struct {
 type CaptchaDomain struct {
 }
 
-func (d CaptchaDomain) Verify(server string, vid string, key string, token string, scene int, ip string) bool {
-	//发送一个post的请求
+func (d *CaptchaDomain) Verify(
+	server string,
+	vid string,
+	key string,
+	token string,
+	scene int,
+	ip string) bool {
+	//发送一个post请求
 	resp, err := tools.Post(server, &vaptchaReq{
 		Id:        vid,
 		Secretkey: key,
@@ -38,7 +42,7 @@ func (d CaptchaDomain) Verify(server string, vid string, key string, token strin
 		return false
 	}
 	result := &vaptchaRsp{}
-	err = json.Unmarshal(resp, result) //json解析结果到result里面
+	err = json.Unmarshal(resp, result)
 	if err != nil {
 		logx.Error(err)
 		return false

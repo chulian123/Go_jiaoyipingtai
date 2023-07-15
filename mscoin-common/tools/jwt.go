@@ -7,7 +7,6 @@ import (
 	"time"
 )
 
-// ParseToken 工具类 解析token工具类
 func ParseToken(tokenString string, secret string) (int64, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		// Don't forget to validate the alg is what you expect:

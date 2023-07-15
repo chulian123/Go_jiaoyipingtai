@@ -2,10 +2,12 @@ go 1.20
 
 use (
 	./grpc-common
-	./ucenter
-	./ucenter-api
-	./mscoin-common
 	./jobcenter
 	./market
 	./market-api
+	./mscoin-common
+	./ucenter
+	./ucenter-api
+	./exchange-api
+	./exchange
 )

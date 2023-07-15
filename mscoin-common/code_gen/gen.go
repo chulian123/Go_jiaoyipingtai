@@ -13,11 +13,11 @@ import (
 
 func connectMysql() *gorm.DB {
 	//配置MySQL连接参数
-	username := "root"            //账号
-	password := "Chulianpzj12345" //密码
-	host := "www.dzhxka.com"      //数据库地址，可以是Ip或者域名
-	port := 5000                  //数据库端口
-	Dbname := "mscoin"            //数据库名
+	username := "root"  //账号
+	password := "root"  //密码
+	host := "127.0.0.1" //数据库地址，可以是Ip或者域名
+	port := 3309        //数据库端口
+	Dbname := "mscoin"  //数据库名
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local", username, password, host, port, Dbname)
 	var err error
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
@@ -58,8 +58,8 @@ func GenStruct(table string, structName string) {
 	db.Raw(fmt.Sprintf("describe %s", table)).Scan(&results)
 	for _, v := range results {
 		field := v.Field
-		name := Name(field)       //表字段 aa_bb AaBb
-		tfName := TFName(v.Field) //驼峰命名 aaBb
+		name := Name(field)       // 表字段 aa_bb  字段名 AaBb
+		tfName := TFName(v.Field) //驼峰命名  aaBb
 		v.Field = name
 		v.Type = getType(v.Type)
 		v.Json = "`json:\"" + tfName + "\"`"
@@ -90,7 +90,7 @@ func GenStruct(table string, structName string) {
 func GenProtoMessage(table string, messageName string) {
 	db := connectMysql()
 	var results []*Result
-	db.Raw(fmt.Sprintf("describe %s", table)).Scan(&results) //原始的SQL查询来获取指定表的描述信息
+	db.Raw(fmt.Sprintf("describe %s", table)).Scan(&results)
 	for _, v := range results {
 		v.MessageField = TFName(v.Field)
 		v.Type = getMessageType(v.Type)

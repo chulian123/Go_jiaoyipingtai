@@ -38,7 +38,6 @@ func (m *defaultRegister) RegisterByPhone(ctx context.Context, in *RegReq, opts 
 	client := register.NewRegisterClient(m.cli.Conn())
 	return client.RegisterByPhone(ctx, in, opts...)
 }
-
 func (m *defaultRegister) SendCode(ctx context.Context, in *CodeReq, opts ...grpc.CallOption) (*NoRes, error) {
 	client := register.NewRegisterClient(m.cli.Conn())
 	return client.SendCode(ctx, in, opts...)

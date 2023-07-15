@@ -1,13 +1,12 @@
 package logic
 
-//登录业务的逻辑代码
-
 import (
 	"context"
 	"github.com/jinzhu/copier"
 	"grpc-common/ucenter/types/login"
 	"mscoin-common/tools"
 	"time"
+
 	"ucenter-api/internal/svc"
 	"ucenter-api/internal/types"
 
@@ -29,8 +28,6 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic 
 }
 
 func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginRes, err error) {
-	// todo: add your logic here and delete this line
-	logx.Info("api Login")
 	ctx, cancelFunc := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancelFunc()
 

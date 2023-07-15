@@ -7,8 +7,7 @@ import (
 	"grpc-common/ucenter/types/login"
 	"mscoin-common/tools"
 	"time"
-	domain2 "ucenter/internal/domain"
-
+	"ucenter/internal/domain"
 	"ucenter/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -18,8 +17,8 @@ type LoginLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	CaptchaDomain *domain2.CaptchaDomain
-	MemberDomain  *domain2.MemberDomain
+	CaptchaDomain *domain.CaptchaDomain
+	MemberDomain  *domain.MemberDomain
 }
 
 func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic {
@@ -27,14 +26,14 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic 
 		ctx:           ctx,
 		svcCtx:        svcCtx,
 		Logger:        logx.WithContext(ctx),
-		CaptchaDomain: domain2.NewCaptchaDomain(),
-		MemberDomain:  domain2.NewMemberDomain(svcCtx.Db), //传入数据库链接
+		CaptchaDomain: domain.NewCaptchaDomain(),
+		MemberDomain:  domain.NewMemberDomain(svcCtx.Db),
 	}
 }
 
+// Login {code:111,msg:xxx}
 func (l *LoginLogic) Login(in *login.LoginReq) (*login.LoginRes, error) {
-	logx.Info("ucenter Login By Phone call服务调用成功 ...")
-	//1.校验前端的人际验证是否通过
+	//1. 先校验人机是否通过
 	isVerify := l.CaptchaDomain.Verify(
 		in.Captcha.Server,
 		l.svcCtx.Config.Captcha.Vid,
@@ -43,39 +42,35 @@ func (l *LoginLogic) Login(in *login.LoginReq) (*login.LoginRes, error) {
 		2,
 		in.Ip)
 	if !isVerify {
-		return nil, errors.New("人机校验不通过(来自 Ucenter RegisterByPhone 报错)")
+		return nil, errors.New("人机校验不通过")
 	}
-	logx.Info("人机校验通过 ...")
-	//2,密码校验
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	member, err := l.MemberDomain.FindByPhone(ctx, in.GetUsername())
+	//2. 校验密码
+	member, err := l.MemberDomain.FindByPhone(context.Background(), in.GetUsername())
 	if err != nil {
 		logx.Error(err)
 		return nil, errors.New("登录失败")
 	}
-	if member == nil { //如果查询回来的登录用户为空
-		logx.Error(err)
-		return nil, errors.New("该用户未注册")
+	if member == nil {
+		return nil, errors.New("此用户未注册")
 	}
 	password := member.Password
 	salt := member.Salt
-	verify := tools.Verify(in.Password, salt, password, nil) //解密密码
+	verify := tools.Verify(in.Password, salt, password, nil)
 	if !verify {
 		return nil, errors.New("密码不正确")
 	}
-	//3，登录成功后 生成token提供给前端，前端调用token来传递， 我们进行token认证
-	key := l.svcCtx.Config.JWT.AccessSecret        //获取加密的钥匙窜
-	expireTime := l.svcCtx.Config.JWT.AccessExpire //token的过期时间
-	token, err := l.getJwtToken(key, time.Now().Unix(), expireTime, member.Id)
+	//3. 登录成功，生成token，提供给前端，前端调用传递token，我们进行token认证即可
+	//jwt的技术 A.B.C
+	key := l.svcCtx.Config.JWT.AccessSecret
+	expire := l.svcCtx.Config.JWT.AccessExpire
+	token, err := l.getJwtToken(key, time.Now().Unix(), expire, member.Id)
 	if err != nil {
-		logx.Error(err)
-		return nil, errors.New("Token生成错误")
+		return nil, errors.New("token生成错误")
 	}
-	//返回登录信息
+	//返回登录所需信息
 	loginCount := member.LoginCount + 1
 	go func() {
-		l.MemberDomain.UpDateLoginCount(context.Background(), member.Id, 1)
+		l.MemberDomain.UpdateLoginCount(context.Background(), member.Id, 1)
 	}()
 	return &login.LoginRes{
 		Token:         token,
@@ -88,7 +83,7 @@ func (l *LoginLogic) Login(in *login.LoginReq) (*login.LoginRes, error) {
 		Avatar:        member.Avatar,
 		PromotionCode: member.PromotionCode,
 		SuperPartner:  member.SuperPartner,
-		LoginCount:    int32(loginCount), //登录次数
+		LoginCount:    int32(loginCount),
 	}, nil
 }
 

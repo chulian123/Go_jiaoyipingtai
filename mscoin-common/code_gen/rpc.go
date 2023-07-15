@@ -1,10 +1,10 @@
 package code_gen
 
 import (
+	"html/template"
 	"log"
 	"os"
 	"strings"
-	"text/template"
 )
 
 type RpcCommon struct {

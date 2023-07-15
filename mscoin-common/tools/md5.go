@@ -1,11 +1,11 @@
 package tools
 
 import (
+	"crypto/rand"
 	"crypto/sha512"
 	"encoding/hex"
 	"golang.org/x/crypto/pbkdf2"
 	"hash"
-	"math/rand"
 )
 
 const (
@@ -14,6 +14,7 @@ const (
 	defaultKeyLen     = 128
 )
 
+// 123456+!@##$$%%
 var defaultHashFunction = sha512.New
 
 // Options is a struct for custom values of salt length, number of iterations, the encoded key's length,
