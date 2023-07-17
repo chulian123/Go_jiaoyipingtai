@@ -12,12 +12,16 @@ func RegisterHandlers(r *Routers, serverCtx *svc.ServiceContext) {
 	registerGroup := r.Group()
 	registerGroup.Post("/uc/register/phone", register.Register)
 	registerGroup.Post("/uc/mobile/code", register.SendCode)
+
 	loginGroup := r.Group()
 	login := NewLoginHandler(serverCtx)
 	loginGroup.Post("/uc/login", login.Login)
 	loginGroup.Post("/uc/check/login", login.CheckLogin)
+
 	assetGroup := r.Group()
 	assetGroup.Use(midd.Auth(serverCtx.Config.JWT.AccessSecret))
+
 	asset := NewAssetHandler(serverCtx)
 	assetGroup.Post("/uc/asset/wallet/:coinName", asset.FindWalletBySymbol)
+	assetGroup.Post("/uc/asset/wallet", asset.FindWallet) // 用户钱包信息
 }

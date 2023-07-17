@@ -41,3 +41,20 @@ func (l *Asset) FindWalletBySymbol(req *types.AssetReq) (*types.MemberWallet, er
 	}
 	return resp, nil
 }
+
+func (l *Asset) FindWallet(req *types.AssetReq) ([]*types.MemberWallet, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	value := l.ctx.Value("userId").(int64)
+	memberWalletResp, err := l.svcCtx.UCAssetRpc.FindWallet(ctx, &asset.AssetReq{
+		UserId: value,
+	})
+	if err != nil {
+		return nil, err
+	}
+	var resp []*types.MemberWallet
+	if err := copier.Copy(&resp, memberWalletResp.List); err != nil {
+		return nil, err
+	}
+	return resp, nil
+}

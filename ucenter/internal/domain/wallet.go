@@ -4,9 +4,11 @@ import (
 	"context"
 	"errors"
 	"github.com/jinzhu/copier"
+	"github.com/zeromicro/go-zero/core/logx"
 	"grpc-common/market/mclient"
 	"mscoin-common/msdb"
 	"mscoin-common/msdb/tran"
+	"mscoin-common/op"
 	"ucenter/internal/dao"
 	"ucenter/internal/model"
 	"ucenter/internal/repo"
@@ -15,6 +17,7 @@ import (
 type MemberWalletDomain struct {
 	memberWalletRepo repo.MemberWalletRepo
 	transaction      tran.Transaction
+	marketRpc        mclient.Market
 }
 
 func (d *MemberWalletDomain) FindWalletBySymbol(ctx context.Context, id int64, name string, coin *mclient.Coin) (*model.MemberWalletCoin, error) {
@@ -84,9 +87,40 @@ func (d *MemberWalletDomain) UpdateWalletCoinAndBase(ctx context.Context, baseWa
 	})
 }
 
-func NewMemberWalletDomain(db *msdb.MsDB) *MemberWalletDomain {
+func (d *MemberWalletDomain) FindWallet(ctx context.Context, userId int64) (list []*model.MemberWalletCoin, err error) {
+	//查询 币种详情
+	memberWallet, err := d.memberWalletRepo.FindByMemberId(ctx, userId)
+	if err != nil {
+		logx.Error(err)
+		return nil, err
+	}
+	for _, v := range memberWallet {
+		coinInfo, err := d.marketRpc.FindCoinInfo(ctx, &mclient.MarketReq{
+			Unit: v.CoinName,
+		})
+		if err != nil {
+			logx.Error(err)
+			return nil, err
+		}
+		if coinInfo.Unit == "USDT" {
+			coinInfo.CnyRate = 7
+			coinInfo.UsdRate = 1
+		} else {
+			coinInfo.UsdRate = 20000
+			coinInfo.CnyRate = op.MulFloor(7, coinInfo.UsdRate, 10)
+		}
+		list = append(list, v.Copy(coinInfo))
+
+	}
+	return list, nil
+	//查询 币种详情
+
+}
+
+func NewMemberWalletDomain(db *msdb.MsDB, marketRpc mclient.Market) *MemberWalletDomain {
 	return &MemberWalletDomain{
 		memberWalletRepo: dao.NewMemberWalletDao(db),
 		transaction:      tran.NewTransaction(db.Conn),
+		marketRpc:        marketRpc,
 	}
 }

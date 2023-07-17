@@ -11,11 +11,19 @@ import (
 )
 
 type (
-	AssetReq     = asset.AssetReq
-	MemberWallet = asset.MemberWallet
+	AssetReq              = asset.AssetReq
+	MemberWallet          = asset.MemberWallet
+	MemberWalletList      = asset.MemberWalletList
+	AssetResp             = asset.AssetResp
+	MemberTransactionList = asset.MemberTransactionList
+	AddressList           = asset.AddressList
 
 	Asset interface {
 		FindWalletBySymbol(ctx context.Context, in *AssetReq, opts ...grpc.CallOption) (*MemberWallet, error)
+		FindWallet(ctx context.Context, in *AssetReq, opts ...grpc.CallOption) (*MemberWalletList, error)
+		ResetAddress(ctx context.Context, in *AssetReq, opts ...grpc.CallOption) (*AssetResp, error)
+		FindTransaction(ctx context.Context, in *AssetReq, opts ...grpc.CallOption) (*MemberTransactionList, error)
+		GetAddress(ctx context.Context, in *AssetReq, opts ...grpc.CallOption) (*AddressList, error)
 	}
 
 	defaultAsset struct {
@@ -32,4 +40,21 @@ func NewAsset(cli zrpc.Client) Asset {
 func (m *defaultAsset) FindWalletBySymbol(ctx context.Context, in *AssetReq, opts ...grpc.CallOption) (*MemberWallet, error) {
 	client := asset.NewAssetClient(m.cli.Conn())
 	return client.FindWalletBySymbol(ctx, in, opts...)
+}
+func (m *defaultAsset) FindWallet(ctx context.Context, in *AssetReq, opts ...grpc.CallOption) (*MemberWalletList, error) {
+	client := asset.NewAssetClient(m.cli.Conn())
+	return client.FindWallet(ctx, in, opts...)
+}
+func (m *defaultAsset) ResetAddress(ctx context.Context, in *AssetReq, opts ...grpc.CallOption) (*AssetResp, error) {
+	client := asset.NewAssetClient(m.cli.Conn())
+	return client.ResetAddress(ctx, in, opts...)
+}
+func (m *defaultAsset) FindTransaction(ctx context.Context, in *AssetReq, opts ...grpc.CallOption) (*MemberTransactionList, error) {
+	client := asset.NewAssetClient(m.cli.Conn())
+	return client.FindTransaction(ctx, in, opts...)
+}
+
+func (m *defaultAsset) GetAddress(ctx context.Context, in *AssetReq, opts ...grpc.CallOption) (*AddressList, error) {
+	client := asset.NewAssetClient(m.cli.Conn())
+	return client.GetAddress(ctx, in, opts...)
 }

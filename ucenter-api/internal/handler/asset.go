@@ -33,3 +33,13 @@ func (h *AssetHandler) FindWalletBySymbol(w http.ResponseWriter, r *http.Request
 	result := common.NewResult().Deal(resp, err)
 	httpx.OkJsonCtx(r.Context(), w, result)
 }
+
+func (h *AssetHandler) FindWallet(w http.ResponseWriter, r *http.Request) {
+	var req = types.AssetReq{}
+	ip := tools.GetRemoteClientIp(r)
+	req.Ip = ip
+	l := logic.NewAssetLogic(r.Context(), h.svcCtx)
+	resp, err := l.FindWallet(&req)
+	result := common.NewResult().Deal(resp, err)
+	httpx.OkJsonCtx(r.Context(), w, result)
+}

@@ -9,8 +9,13 @@ message AssetReq {
   string coinName = 1;
   string ip = 2;
   int64 userId = 3;
+  string startTime = 4;
+  string endTime = 5;
+  int64 pageNo = 6;
+  int64 pageSize = 7;
+  string type = 8;
+  string symbol = 9;
 }
-
 
 message Coin{
   int32 id  = 1;
@@ -56,6 +61,37 @@ message MemberWallet{
   double toReleased  = 10;
 }
 
+message MemberWalletList{
+  repeated MemberWallet list = 1;
+}
+
+
+message MemberTransaction{
+  int64 id  = 1;
+  string address  = 2;
+  double amount  = 3;
+  string createTime  = 4;
+  double fee  = 5;
+  int32 flag  = 6;
+  int64 memberId  = 7;
+  string symbol  = 8;
+  string type  = 9;
+  string discountFee  = 10;
+  string realFee  = 11;
+}
+
+message MemberTransactionList {
+  repeated MemberTransaction list = 1;
+  int64 total = 2;
+}
+message AddressList{
+  repeated string list = 1;
+}
+message AssetResp{}
 service Asset {
   rpc findWalletBySymbol(AssetReq) returns(MemberWallet);
+  rpc findWallet(AssetReq) returns(MemberWalletList);
+  rpc ResetAddress(AssetReq) returns(AssetResp);
+  rpc FindTransaction(AssetReq) returns(MemberTransactionList);
+  rpc getAddress(AssetReq) returns(AddressList);
 }

@@ -11,4 +11,5 @@ type MemberWalletRepo interface {
 	FindByIdAndCoinName(ctx context.Context, memId int64, coinName string) (mw *model.MemberWallet, err error)
 	UpdateFreeze(ctx context.Context, conn msdb.DbConn, memberId int64, symbol string, money float64) error
 	UpdateWallet(ctx context.Context, conn msdb.DbConn, id int64, balance float64, frozenBalance float64) error
+	FindByMemberId(ctx context.Context, memberId int64) ([]*model.MemberWallet, error)
 }
