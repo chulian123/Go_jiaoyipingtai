@@ -26,6 +26,7 @@ type MarketClient interface {
 	FindSymbolInfo(ctx context.Context, in *MarketReq, opts ...grpc.CallOption) (*ExchangeCoin, error)
 	FindCoinInfo(ctx context.Context, in *MarketReq, opts ...grpc.CallOption) (*Coin, error)
 	HistoryKline(ctx context.Context, in *MarketReq, opts ...grpc.CallOption) (*HistoryRes, error)
+	FindExchangeCoinVisible(ctx context.Context, in *MarketReq, opts ...grpc.CallOption) (*ExchangeCoinRes, error)
 }
 
 type marketClient struct {
@@ -72,6 +73,15 @@ func (c *marketClient) HistoryKline(ctx context.Context, in *MarketReq, opts ...
 	return out, nil
 }
 
+func (c *marketClient) FindExchangeCoinVisible(ctx context.Context, in *MarketReq, opts ...grpc.CallOption) (*ExchangeCoinRes, error) {
+	out := new(ExchangeCoinRes)
+	err := c.cc.Invoke(ctx, "/market.Market/FindExchangeCoinVisible", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MarketServer is the server API for Market service.
 // All implementations must embed UnimplementedMarketServer
 // for forward compatibility
@@ -80,6 +90,7 @@ type MarketServer interface {
 	FindSymbolInfo(context.Context, *MarketReq) (*ExchangeCoin, error)
 	FindCoinInfo(context.Context, *MarketReq) (*Coin, error)
 	HistoryKline(context.Context, *MarketReq) (*HistoryRes, error)
+	FindExchangeCoinVisible(context.Context, *MarketReq) (*ExchangeCoinRes, error)
 	mustEmbedUnimplementedMarketServer()
 }
 
@@ -98,6 +109,9 @@ func (UnimplementedMarketServer) FindCoinInfo(context.Context, *MarketReq) (*Coi
 }
 func (UnimplementedMarketServer) HistoryKline(context.Context, *MarketReq) (*HistoryRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method HistoryKline not implemented")
+}
+func (UnimplementedMarketServer) FindExchangeCoinVisible(context.Context, *MarketReq) (*ExchangeCoinRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindExchangeCoinVisible not implemented")
 }
 func (UnimplementedMarketServer) mustEmbedUnimplementedMarketServer() {}
 
@@ -184,6 +198,24 @@ func _Market_HistoryKline_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Market_FindExchangeCoinVisible_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MarketReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MarketServer).FindExchangeCoinVisible(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/market.Market/FindExchangeCoinVisible",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MarketServer).FindExchangeCoinVisible(ctx, req.(*MarketReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Market_ServiceDesc is the grpc.ServiceDesc for Market service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -206,6 +238,10 @@ var Market_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "HistoryKline",
 			Handler:    _Market_HistoryKline_Handler,
+		},
+		{
+			MethodName: "FindExchangeCoinVisible",
+			Handler:    _Market_FindExchangeCoinVisible_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

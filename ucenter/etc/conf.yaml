@@ -2,7 +2,7 @@ Name: ucenter.rpc
 ListenOn: 127.0.0.1:8081
 Etcd:
   Hosts:
-  - 127.0.0.1:2379
+    - 127.0.0.1:2379
   Key: ucenter.rpc
 Mysql:
   DataSource: root:Chulianpzj12345@tcp(www.dzhxka.com:5000)/mscoin?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai

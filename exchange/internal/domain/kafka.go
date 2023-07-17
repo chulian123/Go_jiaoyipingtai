@@ -6,6 +6,7 @@ import (
 	"exchange/internal/database"
 	"exchange/internal/model"
 	"github.com/zeromicro/go-zero/core/logx"
+	"time"
 )
 
 type KafkaDomain struct {
@@ -47,9 +48,9 @@ type OrderResult struct {
 }
 
 func (d *KafkaDomain) WaitAddOrderResult() {
-	d.cli.StartRead("exchange_order_init_complete_trading")
+	cli := d.cli.StartRead("exchange_order_init_complete_trading")
 	for {
-		kafkaData := d.cli.Read()
+		kafkaData := cli.Read()
 		logx.Info("读取exchange_order_init_complete_trading 消息成功:" + string(kafkaData.Key))
 		var orderResult OrderResult
 		json.Unmarshal(kafkaData.Data, &orderResult)
@@ -75,6 +76,24 @@ func (d *KafkaDomain) WaitAddOrderResult() {
 			logx.Error(err)
 			d.cli.RPut(kafkaData)
 			continue
+		}
+		//需要发送消息到kafka 订单需要加入到撮合交易当中
+		//如果没有撮合交易成功 加入撮合交易的队列 继续等待完成撮合
+		exchangeOrder.Status = model.Trading
+		for {
+			bytes, _ := json.Marshal(exchangeOrder)
+			orderData := database.KafkaData{
+				Topic: "exchange_order_trading",
+				Key:   []byte(exchangeOrder.OrderId),
+				Data:  bytes,
+			}
+			err := d.cli.SendSync(orderData)
+			if err != nil {
+				logx.Error(err)
+				time.Sleep(250 * time.Millisecond)
+				continue
+			}
+			break
 		}
 	}
 }

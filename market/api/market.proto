@@ -109,9 +109,14 @@ message HistoryRes {
   repeated History list = 1;
 }
 
+message ExchangeCoinRes {
+  repeated ExchangeCoin list = 1;
+}
+
 service Market {
   rpc FindSymbolThumbTrend(MarketReq) returns(SymbolThumbRes);
   rpc FindSymbolInfo(MarketReq) returns(ExchangeCoin);
   rpc FindCoinInfo(MarketReq) returns(Coin);
   rpc HistoryKline(MarketReq) returns(HistoryRes);
+  rpc FindExchangeCoinVisible(MarketReq) returns(ExchangeCoinRes);
 }

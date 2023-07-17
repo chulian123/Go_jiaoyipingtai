@@ -6,6 +6,7 @@ import (
 	"github.com/jinzhu/copier"
 	"grpc-common/market/mclient"
 	"mscoin-common/msdb"
+	"mscoin-common/msdb/tran"
 	"ucenter/internal/dao"
 	"ucenter/internal/model"
 	"ucenter/internal/repo"
@@ -13,6 +14,7 @@ import (
 
 type MemberWalletDomain struct {
 	memberWalletRepo repo.MemberWalletRepo
+	transaction      tran.Transaction
 }
 
 func (d *MemberWalletDomain) FindWalletBySymbol(ctx context.Context, id int64, name string, coin *mclient.Coin) (*model.MemberWalletCoin, error) {
@@ -50,8 +52,41 @@ func (d *MemberWalletDomain) Freeze(ctx context.Context, conn msdb.DbConn, userI
 	return nil
 }
 
+func (d *MemberWalletDomain) FindWalletByMemIdAndCoin(ctx context.Context, memberId int64, coinName string) (*model.MemberWallet, error) {
+	mw, err := d.memberWalletRepo.FindByIdAndCoinName(ctx, memberId, coinName)
+	if err != nil {
+		return nil, err
+	}
+	return mw, nil
+}
+
+//func (d *MemberWalletDomain) UpdateWallet(ctx context.Context, wallet *model.MemberWallet) error {
+//	return d.transaction.Action(func(conn msdb.DbConn) error {
+//		err := d.memberWalletRepo.UpdateWallet(ctx, conn, wallet.Id, wallet.Balance, wallet.FrozenBalance)
+//		if err != nil {
+//			return err
+//		}
+//		return nil
+//	})
+//}
+
+func (d *MemberWalletDomain) UpdateWalletCoinAndBase(ctx context.Context, baseWallet *model.MemberWallet, coinWallet *model.MemberWallet) error {
+	return d.transaction.Action(func(conn msdb.DbConn) error {
+		err := d.memberWalletRepo.UpdateWallet(ctx, conn, baseWallet.Id, baseWallet.Balance, baseWallet.FrozenBalance)
+		if err != nil {
+			return err
+		}
+		err = d.memberWalletRepo.UpdateWallet(ctx, conn, coinWallet.Id, coinWallet.Balance, coinWallet.FrozenBalance)
+		if err != nil {
+			return err
+		}
+		return nil
+	})
+}
+
 func NewMemberWalletDomain(db *msdb.MsDB) *MemberWalletDomain {
 	return &MemberWalletDomain{
-		dao.NewMemberWalletDao(db),
+		memberWalletRepo: dao.NewMemberWalletDao(db),
+		transaction:      tran.NewTransaction(db.Conn),
 	}
 }

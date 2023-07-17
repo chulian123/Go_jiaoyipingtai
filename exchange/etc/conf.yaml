@@ -1,5 +1,7 @@
 Name: exchange.rpc
 ListenOn: 127.0.0.1:8083
+Name: exchange.rpc
+ListenOn: 127.0.0.1:8083
 Etcd:
   Hosts:
     - 127.0.0.1:2379

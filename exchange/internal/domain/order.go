@@ -75,7 +75,8 @@ func (d *ExchangeOrderDomain) AddOrder(
 		if order.Type == model.MarketPrice {
 			money = order.Amount
 		} else {
-			money = op.FloorFloat(order.Price*order.Amount, 8)
+			//order.Price*order.Amount 精度损失问题
+			money = op.MulFloor(order.Price, order.Amount, 8)
 		}
 		if baseWallet.Balance < money {
 			return 0, errors.New("余额不足")
@@ -105,6 +106,14 @@ func (d *ExchangeOrderDomain) UpdateStatusCancel(ctx context.Context, orderId st
 
 func (d *ExchangeOrderDomain) UpdateOrderStatusTrading(ctx context.Context, orderId string) error {
 	return d.orderRepo.UpdateOrderStatusTrading(ctx, orderId)
+}
+
+func (d *ExchangeOrderDomain) FindOrderListBySymbol(ctx context.Context, symbol string, status int) ([]*model.ExchangeOrder, error) {
+	return d.orderRepo.FindOrderListBySymbol(ctx, symbol, status)
+}
+
+func (d *ExchangeOrderDomain) UpdateOrderComplete(ctx context.Context, order *model.ExchangeOrder) interface{} {
+	return d.orderRepo.UpdateOrderComplete(ctx, order.OrderId, order.TradedAmount, order.Turnover, order.Status)
 }
 
 func NewExchangeOrderDomain(db *msdb.MsDB) *ExchangeOrderDomain {

@@ -5,6 +5,7 @@ import (
 	"log"
 	"math"
 	"strconv"
+	"strings"
 )
 
 func DivN(x float64, y float64, n int) float64 {
@@ -16,6 +17,7 @@ func DivN(x float64, y float64, n int) float64 {
 	}
 	return parseFloat
 }
+
 func MulN(x float64, y float64, n int) float64 {
 	s := fmt.Sprintf("%d", n)
 	parseFloat, err := strconv.ParseFloat(fmt.Sprintf("%."+s+"f", x*y), 64)
@@ -43,6 +45,100 @@ func ReduceN(x float64, y float64, n int) float64 {
 		return 0
 	}
 	return parseFloat
+}
+
+func Mul(x float64, y float64) float64 {
+	s1 := fmt.Sprintf("%v", x)
+	n := 0
+	_, after, found := strings.Cut(s1, ".")
+	if found {
+		n = n + len(after)
+	}
+	s2 := fmt.Sprintf("%v", y)
+	_, after, found = strings.Cut(s2, ".")
+	if found {
+		n = n + len(after)
+	}
+	//n小数点位数  x 8 y 8 16位
+	sprintf := fmt.Sprintf("%d", n)
+	value, _ := strconv.ParseFloat(fmt.Sprintf("%."+sprintf+"f", x*y), 64)
+	return value
+}
+
+func MulFloor(x float64, y float64, n int) float64 {
+	//自动根据小数点的位数 进行保留
+	mulN := Mul(x, y)
+	return FloorFloat(mulN, uint(n))
+}
+
+func Div(x float64, y float64) float64 {
+	s1 := fmt.Sprintf("%v", x)
+	n := 0
+	_, after, found := strings.Cut(s1, ".")
+	if found {
+		n = n + len(after)
+	}
+	s2 := fmt.Sprintf("%v", y)
+	_, after, found = strings.Cut(s2, ".")
+	if found {
+		n = n + len(after)
+	}
+	//n小数点位数  x 8 y 8 16位
+	sprintf := fmt.Sprintf("%d", n)
+	value, _ := strconv.ParseFloat(fmt.Sprintf("%."+sprintf+"f", x/y), 64)
+	return value
+}
+
+func DivFloor(x float64, y float64, n int) float64 {
+	//自动根据小数点的位数 进行保留
+	mulN := Div(x, y)
+	return FloorFloat(mulN, uint(n))
+}
+func Sub(x float64, y float64) float64 {
+	s1 := fmt.Sprintf("%v", x)
+	n := 0
+	_, after, found := strings.Cut(s1, ".")
+	if found {
+		n = n + len(after)
+	}
+	s2 := fmt.Sprintf("%v", y)
+	_, after, found = strings.Cut(s2, ".")
+	if found {
+		n = n + len(after)
+	}
+	//n小数点位数  x 8 y 8 16位
+	sprintf := fmt.Sprintf("%d", n)
+	value, _ := strconv.ParseFloat(fmt.Sprintf("%."+sprintf+"f", x-y), 64)
+	return value
+}
+
+func SubFloor(x float64, y float64, n int) float64 {
+	//自动根据小数点的位数 进行保留
+	mulN := Sub(x, y)
+	return FloorFloat(mulN, uint(n))
+}
+func Add(x float64, y float64) float64 {
+	s1 := fmt.Sprintf("%v", x)
+	n := 0
+	_, after, found := strings.Cut(s1, ".")
+	if found {
+		n = n + len(after)
+	}
+	s2 := fmt.Sprintf("%v", y)
+	_, after, found = strings.Cut(s2, ".")
+	if found {
+		n = n + len(after)
+	}
+	//n小数点位数  x 8 y 8 16位
+	sprintf := fmt.Sprintf("%d", n)
+	value, _ := strconv.ParseFloat(fmt.Sprintf("%."+sprintf+"f", x+y), 64)
+	return value
+}
+
+func AddFloor(x float64, y float64, n int) float64 {
+	//自动根据小数点的位数 进行保留
+	mulN := Add(x, y)
+	return FloorFloat(mulN, uint(n))
 }
 
 // FloorFloat 1.245  保留两位小数点 1.25  金融方面的应用 1.24  2.0/3.0
