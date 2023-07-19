@@ -5,10 +5,12 @@ import (
 	"errors"
 	"github.com/jinzhu/copier"
 	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/core/stores/cache"
 	"grpc-common/market/mclient"
 	"mscoin-common/msdb"
 	"mscoin-common/msdb/tran"
 	"mscoin-common/op"
+	"mscoin-common/tools"
 	"ucenter/internal/dao"
 	"ucenter/internal/model"
 	"ucenter/internal/repo"
@@ -18,6 +20,7 @@ type MemberWalletDomain struct {
 	memberWalletRepo repo.MemberWalletRepo
 	transaction      tran.Transaction
 	marketRpc        mclient.Market
+	redisCache       cache.Cache
 }
 
 func (d *MemberWalletDomain) FindWalletBySymbol(ctx context.Context, id int64, name string, coin *mclient.Coin) (*model.MemberWalletCoin, error) {
@@ -94,33 +97,51 @@ func (d *MemberWalletDomain) FindWallet(ctx context.Context, userId int64) (list
 		logx.Error(err)
 		return nil, err
 	}
+	//在redis里面查询对应的汇率信息
+	//var cnyRate float64
+	//d.redisCache.Get("USDT::CNY::RATE", &cnyRate)
+	//if cnyRate == 0 {
+	//	cnyRate = 7
+	//}
+	var cnyRateStr string
+	d.redisCache.Get("USDT::CNY::RATE", &cnyRateStr)
+	var cnyRate float64 = 7
+	if cnyRateStr != "" {
+		cnyRate = tools.ToFloat64(cnyRateStr)
+	}
+	//查询 币种详情
 	for _, v := range memberWallet {
 		coinInfo, err := d.marketRpc.FindCoinInfo(ctx, &mclient.MarketReq{
 			Unit: v.CoinName,
 		})
 		if err != nil {
-			logx.Error(err)
 			return nil, err
 		}
 		if coinInfo.Unit == "USDT" {
-			coinInfo.CnyRate = 7
+			coinInfo.CnyRate = cnyRate
 			coinInfo.UsdRate = 1
 		} else {
-			coinInfo.UsdRate = 20000
-			coinInfo.CnyRate = op.MulFloor(7, coinInfo.UsdRate, 10)
+			var usdtRateStr string
+			var usdtRate float64 = 20000
+			d.redisCache.Get(v.CoinName+"::USDT::RATE", &usdtRateStr)
+			if usdtRateStr != "" {
+				usdtRate = tools.ToFloat64(usdtRateStr)
+			}
+			coinInfo.UsdRate = usdtRate
+			coinInfo.CnyRate = op.MulFloor(cnyRate, coinInfo.UsdRate, 10)
 		}
 		list = append(list, v.Copy(coinInfo))
-
 	}
 	return list, nil
 	//查询 币种详情
 
 }
 
-func NewMemberWalletDomain(db *msdb.MsDB, marketRpc mclient.Market) *MemberWalletDomain {
+func NewMemberWalletDomain(db *msdb.MsDB, marketRpc mclient.Market, redisCache cache.Cache) *MemberWalletDomain {
 	return &MemberWalletDomain{
 		memberWalletRepo: dao.NewMemberWalletDao(db),
 		transaction:      tran.NewTransaction(db.Conn),
 		marketRpc:        marketRpc,
+		redisCache:       redisCache,
 	}
 }

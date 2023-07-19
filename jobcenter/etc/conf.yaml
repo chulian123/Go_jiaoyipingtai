@@ -3,13 +3,16 @@ Okx:
   SecretKey: "004148A48D9335E147963C6F5B9C4E63"
   Pass: "Mszlu!@#$56789"
   Host: "https://www.okx.com"
-  Proxy: "http://localhost:10809"
+  Proxy: "http://192.168.50.1:3333"
 Mongo:
-  Url: "mongodb://localhost:27018"
+  Url: "mongodb://www.dzhxka.com:6000"
   Username: "root"
-  Password: "root123456"
+  Password: "Chulianpzj12345"
   DataBase: "mscoin"
 Kafka:
   Addr: localhost:9092
   WriteCap: 100
   ReadCap: 100
+CacheRedis:
+  - Host: www.dzhxka.com:5600
+    Type: node

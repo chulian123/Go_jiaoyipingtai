@@ -39,7 +39,7 @@ func (w *WebsocketHandler) HandleKLine(symbol string, kline *model.Kline, thumbM
 	w.wsServer.BroadcastToNamespace("/", "/topic/market/thumb", string(marshal))
 
 	bytes, _ := json.Marshal(kline)
-	w.wsServer.BroadcastToNamespace("/", "/topic/market/kline/"+symbol, string(bytes))
+	w.wsServer.BroadcastToNamespace("/", "/topic/market/logic/"+symbol, string(bytes))
 
 	logx.Info("================WebsocketHandler End=======================")
 }

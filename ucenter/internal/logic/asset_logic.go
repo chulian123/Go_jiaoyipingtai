@@ -56,6 +56,6 @@ func NewAssetLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AssetLogic 
 		svcCtx:             svcCtx,
 		Logger:             logx.WithContext(ctx),
 		memberDomain:       domain.NewMemberDomain(svcCtx.Db),
-		memberWalletDomain: domain.NewMemberWalletDomain(svcCtx.Db, svcCtx.MarketRpc),
+		memberWalletDomain: domain.NewMemberWalletDomain(svcCtx.Db, svcCtx.MarketRpc, svcCtx.Cache),
 	}
 }

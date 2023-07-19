@@ -11,7 +11,7 @@ import (
 )
 
 const KLINE1M = "kline_1m"
-const KLINE = "kline"
+const KLINE = "logic"
 const TRADE = "trade"
 const TradePlateTopic = "exchange_order_trade_plate"
 const TradePlate = "tradePlate"
@@ -23,7 +23,7 @@ type MarketHandler interface {
 }
 
 type ProcessData struct {
-	Type string //trade 交易 kline k线
+	Type string //trade 交易 logic k线
 	Key  []byte
 	Data []byte
 }
