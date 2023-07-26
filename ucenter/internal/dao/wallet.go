@@ -52,6 +52,13 @@ func (m *MemberWalletDao) FindByMemberId(ctx context.Context, memberId int64) (l
 	return
 }
 
+func (m *MemberWalletDao) UpdateAddress(ctx context.Context, wallet *model.MemberWallet) error {
+	updateSql := "update member_wallet set address=?,address_private_key=? where id=?"
+	session := m.conn.Session(ctx)
+	err := session.Model(&model.MemberWallet{}).Exec(updateSql, wallet.Address, wallet.AddressPrivateKey, wallet.Id).Error
+	return err
+}
+
 func NewMemberWalletDao(db *msdb.MsDB) *MemberWalletDao {
 	return &MemberWalletDao{
 		conn: gorms.New(db.Conn),

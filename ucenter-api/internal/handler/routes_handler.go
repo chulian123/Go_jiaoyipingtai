@@ -23,5 +23,7 @@ func RegisterHandlers(r *Routers, serverCtx *svc.ServiceContext) {
 
 	asset := NewAssetHandler(serverCtx)
 	assetGroup.Post("/uc/asset/wallet/:coinName", asset.FindWalletBySymbol)
-	assetGroup.Post("/uc/asset/wallet", asset.FindWallet) // 用户钱包信息
+	assetGroup.Post("/uc/asset/wallet", asset.FindWallet)                 // 用户钱包信息
+	assetGroup.Post("/uc/asset/wallet/reset-address", asset.ResetAddress) //重置钱包信息
+
 }

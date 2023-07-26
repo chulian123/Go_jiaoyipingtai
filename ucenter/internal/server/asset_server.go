@@ -30,3 +30,8 @@ func (s *AssetServer) FindWallet(ctx context.Context, in *asset.AssetReq) (*asse
 	l := logic.NewAssetLogic(ctx, s.svcCtx)
 	return l.FindWallet(in)
 }
+
+func (s *AssetServer) ResetAddress(ctx context.Context, in *asset.AssetReq) (*asset.AssetResp, error) {
+	l := logic.NewAssetLogic(ctx, s.svcCtx)
+	return l.ResetAddress(in)
+}

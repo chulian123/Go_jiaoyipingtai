@@ -53,6 +53,7 @@ type LoginRes struct {
 type AssetReq struct {
 	CoinName string `json:"coinName,optional" path:"coinName,optional"`
 	Ip       string `json:"ip,optional"`
+	Unit     string `json:"unit,optional" form:"unit,optional"`
 }
 
 type Coin struct {

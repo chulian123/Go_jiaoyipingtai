@@ -7,17 +7,18 @@ import (
 )
 
 type MemberWallet struct {
-	Id             int64   `gorm:"column:id"`
-	Address        string  `gorm:"column:address"`
-	Balance        float64 `gorm:"column:balance"`
-	FrozenBalance  float64 `gorm:"column:frozen_balance"`
-	ReleaseBalance float64 `gorm:"column:release_balance"`
-	IsLock         int     `gorm:"column:is_lock"`
-	MemberId       int64   `gorm:"column:member_id"`
-	Version        int     `gorm:"column:version"`
-	CoinId         int64   `gorm:"column:coin_id"`
-	ToReleased     float64 `gorm:"column:to_released"`
-	CoinName       string  `gorm:"column:coin_name"`
+	Id                int64   `gorm:"column:id"`
+	Address           string  `gorm:"column:address"`
+	Balance           float64 `gorm:"column:balance"`
+	FrozenBalance     float64 `gorm:"column:frozen_balance"`
+	ReleaseBalance    float64 `gorm:"column:release_balance"`
+	IsLock            int     `gorm:"column:is_lock"`
+	MemberId          int64   `gorm:"column:member_id"`
+	Version           int     `gorm:"column:version"`
+	CoinId            int64   `gorm:"column:coin_id"`
+	ToReleased        float64 `gorm:"column:to_released"`
+	CoinName          string  `gorm:"column:coin_name"`
+	AddressPrivateKey string  `gorm:"address_private_key"`
 }
 
 func (*MemberWallet) TableName() string {

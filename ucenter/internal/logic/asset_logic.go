@@ -5,6 +5,7 @@ import (
 	"github.com/jinzhu/copier"
 	"grpc-common/market/types/market"
 	"grpc-common/ucenter/types/asset"
+	"mscoin-common/base"
 	"ucenter/internal/domain"
 	"ucenter/internal/svc"
 
@@ -48,6 +49,35 @@ func (l *AssetLogic) FindWallet(req *asset.AssetReq) (*asset.MemberWalletList, e
 	return &asset.MemberWalletList{
 		List: list,
 	}, nil
+}
+
+func (l *AssetLogic) ResetAddress(req *asset.AssetReq) (*asset.AssetResp, error) {
+	//查询用户钱包 查询用户钱包地址 地址为空就要生成新的
+	memberWallet, err := l.memberWalletDomain.FindWalletByMemIdAndCoin(l.ctx, req.UserId, req.CoinName)
+	if err != nil {
+		return nil, err
+	}
+	//判断比特币的
+	if req.CoinName == "BTC" {
+		if memberWallet.Address == "" {
+			wallet, err := base.NewWallet()
+			if err != nil {
+				logx.Info("生成NewWallet失败!")
+				return nil, err
+			}
+			address := wallet.GetTestAddress()
+			privatekey := wallet.GetPriKey()
+			memberWallet.AddressPrivateKey = privatekey
+			memberWallet.Address = string(address)
+			//更新钱包信息
+			err = l.memberWalletDomain.UpdateAddress(l.ctx, memberWallet)
+			if err != nil {
+				logx.Info("更新钱包信息失败!")
+				return nil, err
+			}
+		}
+	}
+	return &asset.AssetResp{}, nil
 }
 
 func NewAssetLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AssetLogic {
