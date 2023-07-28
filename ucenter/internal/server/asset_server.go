@@ -35,3 +35,8 @@ func (s *AssetServer) ResetAddress(ctx context.Context, in *asset.AssetReq) (*as
 	l := logic.NewAssetLogic(ctx, s.svcCtx)
 	return l.ResetAddress(in)
 }
+
+func (s *AssetServer) FindTransaction(ctx context.Context, in *asset.AssetReq) (*asset.MemberTransactionList, error) {
+	l := logic.NewAssetLogic(ctx, s.svcCtx)
+	return l.FindTransaction(in)
+}

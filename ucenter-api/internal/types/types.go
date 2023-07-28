@@ -51,9 +51,15 @@ type LoginRes struct {
 }
 
 type AssetReq struct {
-	CoinName string `json:"coinName,optional" path:"coinName,optional"`
-	Ip       string `json:"ip,optional"`
-	Unit     string `json:"unit,optional" form:"unit,optional"`
+	CoinName  string `json:"coinName,optional" path:"coinName,optional"`
+	Ip        string `json:"ip,optional"`
+	Unit      string `json:"unit,optional" form:"unit,optional"`
+	PageNo    int    `json:"pageNo,optional" form:"pageNo,optional"`
+	PageSize  int    `json:"pageSize,optional" form:"pageSize,optional"`
+	StartTime string `json:"startTime,optional" form:"startTime,optional"`
+	EndTime   string `json:"endTime,optional" form:"endTime,optional"`
+	Symbol    string `json:"symbol,optional" form:"symbol,optional"`
+	Type      string `json:"type,optional" form:"type,optional"`
 }
 
 type Coin struct {
@@ -98,4 +104,17 @@ type MemberWallet struct {
 	Version        int     `json:"version" from:"version"`
 	Coin           Coin    `json:"coin" from:"coinId"`
 	ToReleased     float64 `json:"toReleased" from:"toReleased"`
+}
+type MemberTransaction struct {
+	Id          int64   `json:"id" from:"id"`
+	Address     string  `json:"address" from:"address"`
+	Amount      float64 `json:"amount" from:"amount"`
+	CreateTime  string  `json:"createTime" from:"createTime"`
+	Fee         float64 `json:"fee" from:"fee"`
+	Flag        int     `json:"flag" from:"flag"`
+	MemberId    int64   `json:"memberId" from:"memberId"`
+	Symbol      string  `json:"symbol" from:"symbol"`
+	Type        string  `json:"type" from:"type"`
+	DiscountFee string  `json:"discountFee" from:"discountFee"`
+	RealFee     string  `json:"realFee" from:"realFee"`
 }

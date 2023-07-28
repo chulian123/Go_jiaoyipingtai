@@ -16,8 +16,9 @@ type AssetLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	memberDomain       *domain.MemberDomain
-	memberWalletDomain *domain.MemberWalletDomain
+	memberDomain            *domain.MemberDomain
+	memberWalletDomain      *domain.MemberWalletDomain
+	memberTransactionDomain *domain.MemberTransactionDomain
 }
 
 func (l *AssetLogic) FindWalletBySymbol(req *asset.AssetReq) (*asset.MemberWallet, error) {
@@ -80,12 +81,27 @@ func (l *AssetLogic) ResetAddress(req *asset.AssetReq) (*asset.AssetResp, error)
 	return &asset.AssetResp{}, nil
 }
 
+func (l *AssetLogic) FindTransaction(req *asset.AssetReq) (*asset.MemberTransactionList, error) {
+	//查询所有的充值记录  分页查询
+	transaction, total, err := l.memberTransactionDomain.FindTransaction(l.ctx, req.UserId, req.PageNo, req.PageSize, req.Symbol, req.StartTime, req.EndTime, req.Symbol)
+	if err != nil {
+		return nil, err
+	}
+	var list []*asset.MemberTransaction
+	copier.Copy(&list, transaction)
+	return &asset.MemberTransactionList{
+		List:  list,
+		Total: total,
+	}, nil
+}
+
 func NewAssetLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AssetLogic {
 	return &AssetLogic{
-		ctx:                ctx,
-		svcCtx:             svcCtx,
-		Logger:             logx.WithContext(ctx),
-		memberDomain:       domain.NewMemberDomain(svcCtx.Db),
-		memberWalletDomain: domain.NewMemberWalletDomain(svcCtx.Db, svcCtx.MarketRpc, svcCtx.Cache),
+		ctx:                     ctx,
+		svcCtx:                  svcCtx,
+		Logger:                  logx.WithContext(ctx),
+		memberDomain:            domain.NewMemberDomain(svcCtx.Db),
+		memberWalletDomain:      domain.NewMemberWalletDomain(svcCtx.Db, svcCtx.MarketRpc, svcCtx.Cache),
+		memberTransactionDomain: domain.NewMemberTransactionDomain(svcCtx.Db),
 	}
 }

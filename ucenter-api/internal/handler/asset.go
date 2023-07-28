@@ -57,3 +57,17 @@ func (h *AssetHandler) ResetAddress(w http.ResponseWriter, r *http.Request) {
 	result := common.NewResult().Deal(resp, err)
 	httpx.OkJsonCtx(r.Context(), w, result)
 }
+
+func (h *AssetHandler) FindTransaction(w http.ResponseWriter, r *http.Request) {
+	var req = types.AssetReq{}
+	if err := httpx.ParseForm(r, &req); err != nil {
+		httpx.ErrorCtx(r.Context(), w, err)
+		return
+	}
+	ip := tools.GetRemoteClientIp(r)
+	req.Ip = ip
+	l := logic.NewAssetLogic(r.Context(), h.svcCtx)
+	resp, err := l.FindTransaction(&req)
+	result := common.NewResult().Deal(resp, err)
+	httpx.OkJsonCtx(r.Context(), w, result)
+}
