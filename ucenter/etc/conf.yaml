@@ -5,9 +5,9 @@ Etcd:
     - 127.0.0.1:2379
   Key: ucenter.rpc
 Mysql:
-  DataSource: root:Chulianpzj12345@tcp(www.mmengmao.com:5000)/mscoin?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+  DataSource: root:Chulianpzj12345@tcp(www.mmaomeng.com:5000)/mscoin?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
 CacheRedis:
-  - Host: www.mmengmao.com:5600
+  - Host: www.mmaomeng.com:5600
     Type: node
 Captcha:
   Vid: 63fec1c3507890ee2e7f9dd1

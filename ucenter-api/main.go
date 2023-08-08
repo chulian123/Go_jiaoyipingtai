@@ -20,6 +20,7 @@ func main() {
 	flag.Parse()
 	//日志的打印格式替换一下
 	logx.MustSetup(logx.LogConf{Stat: false, Encoding: "plain"})
+	//加载对应的系统文件
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
 
