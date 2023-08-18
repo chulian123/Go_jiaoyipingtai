@@ -2,6 +2,7 @@ package dao
 
 import (
 	"context"
+	"gorm.io/gorm"
 	"mscoin-common/msdb"
 	"mscoin-common/msdb/gorms"
 	"mscoin-common/tools"
@@ -10,6 +11,22 @@ import (
 
 type MemberTransactionDao struct {
 	conn *gorms.GormConn
+}
+
+func (d *MemberTransactionDao) Save(ctx context.Context, transaction *model.MemberTransaction) (err error) {
+	session := d.conn.Session(ctx)
+	err = session.Save(&transaction).Error
+	return err
+}
+
+func (d *MemberTransactionDao) FindByAmountAndTime(ctx context.Context, adress string, value float64, time int64) (mt *model.MemberTransaction, err error) {
+	session := d.conn.Session(ctx)
+	db := session.Model(&model.MemberTransaction{}).Where("amount=? and address=? and create_time=?", adress, value, time)
+	err = db.Take(&mt).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
+	return
 }
 
 func (d *MemberTransactionDao) FindTransaction(ctx context.Context, pageNo int, pageSize int, memberId int64, startTime string, endTime string, symbol string, transactionType string) (list []*model.MemberTransaction, total int64, err error) {

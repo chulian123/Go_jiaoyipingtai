@@ -56,6 +56,10 @@ func (t *Task) Run() {
 	t.s.Every(1).Minute().Do(func() {
 		logic.NewRate(t.ctx.Config.Okx, t.ctx.Cache).Do()
 	})
+	//十分钟会生成一个区块
+	t.s.Every(10).Minute().Do(func() {
+		logic.NewBitCoin(t.ctx.Cache, t.ctx.AssetRpc, t.ctx.MongoClient, t.ctx.KafkaClient).Do() //扫描一个交易
+	})
 }
 
 func (t *Task) StartBlocking() {

@@ -16,3 +16,8 @@ Kafka:
 CacheRedis:
   - Host: www.mmaomeng.com:5600
     Type: node
+UCenterRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: ucenter.rpc

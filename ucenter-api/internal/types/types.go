@@ -118,3 +118,49 @@ type MemberTransaction struct {
 	DiscountFee string  `json:"discountFee" from:"discountFee"`
 	RealFee     string  `json:"realFee" from:"realFee"`
 }
+
+type ApproveReq struct {
+}
+
+type MemberSecurity struct {
+	Username             string `json:"username"`
+	Id                   int64  `json:"id"`
+	CreateTime           string `json:"createTime"`
+	RealVerified         string `json:"realVerified"`  //是否实名认证
+	EmailVerified        string `json:"emailVerified"` //是否有邮箱
+	PhoneVerified        string `json:"phoneVerified"` //是否有手机号
+	LoginVerified        string `json:"loginVerified"`
+	FundsVerified        string `json:"fundsVerified"` //是否有交易密码
+	RealAuditing         string `json:"realAuditing"`
+	MobilePhone          string `json:"mobilePhone"`
+	Email                string `json:"email"`
+	RealName             string `json:"realName"`
+	RealNameRejectReason string `json:"realNameRejectReason"`
+	IdCard               string `json:"idCard"`
+	Avatar               string `json:"avatar"`
+	AccountVerified      string `json:"accountVerified"`
+}
+
+type WithdrawWalletInfo struct {
+	Unit            string          `json:"unit"`
+	Threshold       float64         `json:"threshold"` //阈值
+	MinAmount       float64         `json:"minAmount"` //最小提币数量
+	MaxAmount       float64         `json:"maxAmount"` //最大提币数量
+	MinTxFee        float64         `json:"minTxFee"`  //最小交易手续费
+	MaxTxFee        float64         `json:"maxTxFee"`
+	NameCn          string          `json:"nameCn"`
+	Name            string          `json:"name"`
+	Balance         float64         `json:"balance"`
+	CanAutoWithdraw string          `json:"canAutoWithdraw"` //true false
+	WithdrawScale   int             `json:"withdrawScale"`
+	AccountType     int             `json:"accountType"`
+	Addresses       []AddressSimple `json:"addresses"`
+}
+
+type AddressSimple struct {
+	Remark  string `json:"remark"`
+	Address string `json:"address"`
+}
+
+type WithdrawReq struct {
+}

@@ -95,6 +95,16 @@ func (l *AssetLogic) FindTransaction(req *asset.AssetReq) (*asset.MemberTransact
 	}, nil
 }
 
+func (l *AssetLogic) GetAdress(req *asset.AssetReq) (*asset.AddressList, error) {
+	adresslist, err := l.memberWalletDomain.GetAllAdress(l.ctx, req.CoinName)
+	if err != nil {
+		return nil, err
+	}
+	return &asset.AddressList{
+		List: adresslist,
+	}, nil
+}
+
 func NewAssetLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AssetLogic {
 	return &AssetLogic{
 		ctx:                     ctx,

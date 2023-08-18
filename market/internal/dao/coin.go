@@ -12,6 +12,12 @@ type CoinDao struct {
 	conn *gorms.GormConn
 }
 
+func (d *CoinDao) FindAll(ctx context.Context) (list []*model.Coin, err error) {
+	session := d.conn.Session(ctx)
+	err = session.Model(&model.Coin{}).Find(&list).Error
+	return
+}
+
 func (d *CoinDao) FindByUnit(ctx context.Context, unit string) (*model.Coin, error) {
 	session := d.conn.Session(ctx)
 	coin := &model.Coin{}

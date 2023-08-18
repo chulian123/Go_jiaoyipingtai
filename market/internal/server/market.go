@@ -37,6 +37,11 @@ func (e *MarketServer) FindExchangeCoinVisible(ctx context.Context, req *market.
 	l := logic.NewMarketLogic(ctx, e.svcCtx)
 	return l.FindExchangeCoinVisible(req)
 }
+
+func (e *MarketServer) FindAllCoin(ctx context.Context, req *market.MarketReq) (*market.CoinList, error) {
+	l := logic.NewMarketLogic(ctx, e.svcCtx)
+	return l.FindAllCoin(req)
+}
 func NewMarketServer(svcCtx *svc.ServiceContext) *MarketServer {
 	return &MarketServer{
 		svcCtx: svcCtx,

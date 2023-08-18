@@ -12,6 +12,21 @@ type MemberWalletDao struct {
 	conn *gorms.GormConn
 }
 
+func (m *MemberWalletDao) FindByAddress(ctx context.Context, adrress string) (mw *model.MemberWallet, err error) {
+	session := m.conn.Session(ctx)
+	err = session.Model(&model.MemberWallet{}).Where("address=?", adrress).Take(&mw).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
+	return
+}
+
+func (m *MemberWalletDao) FindAllAddress(ctx context.Context, coinName string) (list []string, err error) {
+	session := m.conn.Session(ctx)
+	err = session.Model(&model.MemberWallet{}).Where("coin_name = ? ", coinName).Select("address").Find(&list).Error
+	return
+}
+
 func (m *MemberWalletDao) UpdateWallet(ctx context.Context, conn msdb.DbConn, id int64, balance float64, frozenBalance float64) error {
 	gormConn := conn.(*gorms.GormConn)
 	tx := gormConn.Tx(ctx)

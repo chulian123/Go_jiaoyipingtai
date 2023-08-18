@@ -104,6 +104,19 @@ func (l *MarketLogic) FindExchangeCoinVisible(req *market.MarketReq) (*market.Ex
 	}, nil
 }
 
+func (l *MarketLogic) FindAllCoin(req *market.MarketReq) (*market.CoinList, error) {
+	coinlist, err := l.coinDomain.FindAll(l.ctx)
+	if err != nil {
+		return nil, err
+	}
+	var list []*market.Coin
+	copier.Copy(&list, coinlist)
+	return &market.CoinList{
+		List: list,
+	}, nil
+
+}
+
 func NewMarketLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MarketLogic {
 	return &MarketLogic{
 		ctx:                ctx,

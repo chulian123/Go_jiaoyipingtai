@@ -141,6 +141,14 @@ func (d *MemberWalletDomain) UpdateAddress(ctx context.Context, wallet *model.Me
 	return d.memberWalletRepo.UpdateAddress(ctx, wallet)
 }
 
+func (d *MemberWalletDomain) GetAllAdress(ctx context.Context, coinName string) ([]string, error) {
+	return d.memberWalletRepo.FindAllAddress(ctx, coinName)
+}
+
+func (d *MemberWalletDomain) FindByAddress(ctx context.Context, adrress string) (*model.MemberWallet, error) {
+	return d.memberWalletRepo.FindByAddress(ctx, adrress)
+}
+
 func NewMemberWalletDomain(db *msdb.MsDB, marketRpc mclient.Market, redisCache cache.Cache) *MemberWalletDomain {
 	return &MemberWalletDomain{
 		memberWalletRepo: dao.NewMemberWalletDao(db),

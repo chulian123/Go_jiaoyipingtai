@@ -9,6 +9,7 @@ type Config struct {
 	rest.RestConf
 	UCenterRpc zrpc.RpcClientConf
 	JWT        AuthConfig
+	MarketRpc  zrpc.RpcClientConf
 }
 type AuthConfig struct {
 	AccessSecret string

@@ -2,6 +2,7 @@ package svc
 
 import (
 	"github.com/zeromicro/go-zero/zrpc"
+	"grpc-common/market/mclient"
 	"grpc-common/ucenter/ucclient"
 	"ucenter-api/internal/config"
 )
@@ -11,6 +12,9 @@ type ServiceContext struct {
 	UCRegisterRpc ucclient.Register
 	UCLoginRpc    ucclient.Login
 	UCAssetRpc    ucclient.Asset
+	UCMemberRpc   ucclient.Member
+	MarketRpc     mclient.Market
+	UCWithdrawRpc ucclient.Withdraw
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -19,5 +23,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		UCRegisterRpc: ucclient.NewRegister(zrpc.MustNewClient(c.UCenterRpc)),
 		UCLoginRpc:    ucclient.NewLogin(zrpc.MustNewClient(c.UCenterRpc)),
 		UCAssetRpc:    ucclient.NewAsset(zrpc.MustNewClient(c.UCenterRpc)),
+		UCMemberRpc:   ucclient.NewMember(zrpc.MustNewClient(c.UCenterRpc)),
+		MarketRpc:     mclient.NewMarket(zrpc.MustNewClient(c.MarketRpc)),
+		UCWithdrawRpc: ucclient.NewWithdraw(zrpc.MustNewClient(c.UCenterRpc)),
 	}
 }

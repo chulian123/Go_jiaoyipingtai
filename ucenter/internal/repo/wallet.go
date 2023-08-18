@@ -13,4 +13,6 @@ type MemberWalletRepo interface {
 	UpdateWallet(ctx context.Context, conn msdb.DbConn, id int64, balance float64, frozenBalance float64) error
 	FindByMemberId(ctx context.Context, memberId int64) ([]*model.MemberWallet, error)
 	UpdateAddress(ctx context.Context, wallet *model.MemberWallet) error
+	FindAllAddress(ctx context.Context, coinName string) ([]string, error)
+	FindByAddress(ctx context.Context, adrress string) (*model.MemberWallet, error)
 }

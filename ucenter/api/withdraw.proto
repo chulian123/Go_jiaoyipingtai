@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package withdraw;
+
+// protoc-gen-go 版本大于1.4.0, proto文件需要加上go_package,否则无法生成
+option go_package = "./withdraw";
+
+message WithdrawReq {
+  int64 coinId = 1;
+  string ip = 2;
+  int64 userId = 3;
+}
+message AddressSimple{
+  string remark = 1;
+  string address = 2;
+}
+message AddressSimpleList {
+  repeated AddressSimple list = 1;
+}
+service Withdraw {
+  rpc findAddressByCoinId(WithdrawReq) returns(AddressSimpleList);
+}

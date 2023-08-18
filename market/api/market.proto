@@ -113,10 +113,16 @@ message ExchangeCoinRes {
   repeated ExchangeCoin list = 1;
 }
 
+message CoinList {
+  repeated Coin list = 1;
+  int64 total = 2;
+}
 service Market {
   rpc FindSymbolThumbTrend(MarketReq) returns(SymbolThumbRes);
   rpc FindSymbolInfo(MarketReq) returns(ExchangeCoin);
   rpc FindCoinInfo(MarketReq) returns(Coin);
+  rpc FindAllCoin(MarketReq) returns(CoinList);
   rpc HistoryKline(MarketReq) returns(HistoryRes);
   rpc FindExchangeCoinVisible(MarketReq) returns(ExchangeCoinRes);
+  rpc FindCoinById(MarketReq) returns(Coin);
 }

@@ -40,3 +40,8 @@ func (s *AssetServer) FindTransaction(ctx context.Context, in *asset.AssetReq) (
 	l := logic.NewAssetLogic(ctx, s.svcCtx)
 	return l.FindTransaction(in)
 }
+
+func (s *AssetServer) GetAddress(ctx context.Context, in *asset.AssetReq) (*asset.AddressList, error) {
+	l := logic.NewAssetLogic(ctx, s.svcCtx)
+	return l.GetAdress(in)
+}

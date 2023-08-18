@@ -35,6 +35,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	go consumer.ExchangeOrderAdd(newRedis, cli, order, mysql)
 	completeCli := cli.StartReadNew("exchange_order_complete_update_success")
 	go consumer.ExchangeOrderComplete(newRedis, completeCli, mysql)
+	btCli := cli.StartReadNew("BTC_TRANSACTION")
+	go consumer.BitCoinTransaction(newRedis, btCli, mysql)
 	return &ServiceContext{
 		Config:    c,
 		Cache:     redisCache,

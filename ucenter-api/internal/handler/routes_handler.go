@@ -27,4 +27,14 @@ func RegisterHandlers(r *Routers, serverCtx *svc.ServiceContext) {
 	assetGroup.Post("/uc/asset/wallet/reset-address", asset.ResetAddress) //重置钱包信息
 	assetGroup.Post("/uc/asset/transaction/all", asset.FindTransaction)   // 交易记录
 
+	approveGroup := r.Group()
+	approve := NewApproveHandler(serverCtx)
+	approveGroup.Use(midd.Auth(serverCtx.Config.JWT.AccessSecret))
+	approveGroup.Post("/uc/approve/security/setting", approve.SecuritySetting) // 用户的安全设置
+
+	withdrawGroup := r.Group()
+	withdraw := NewWithdrawHandler(serverCtx)
+	withdrawGroup.Use(midd.Auth(serverCtx.Config.JWT.AccessSecret))
+	withdrawGroup.Post("/uc/withdraw/support/coin/info", withdraw.QueryWithdrawCoin) //提现币种详细信息
+
 }

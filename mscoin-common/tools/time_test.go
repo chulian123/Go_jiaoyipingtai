@@ -3,6 +3,7 @@ package tools
 import (
 	"context"
 	"fmt"
+	"math/big"
 	"testing"
 	"time"
 )
@@ -36,4 +37,14 @@ func CC(ctx context.Context) {
 	value := ctx.Value("traceId")
 	ctx = context.WithValue(ctx, "traceId", fmt.Sprintf("%v", value)+"_CCC")
 	fmt.Println(ctx.Value("traceId"))
+}
+
+func TestComputeTarget(t *testing.T) {
+	coefficient, _ := new(big.Int).SetString("0xffff", 0)
+	fmt.Println(coefficient)
+	exponent, _ := new(big.Int).SetString("0x1d", 0)
+	fmt.Println(exponent)
+	result := new(big.Int).Exp(big.NewInt(2), new(big.Int).Mul(big.NewInt(8), new(big.Int).Sub(exponent, big.NewInt(3))), nil)
+	mul := new(big.Int).Mul(coefficient, result)
+	fmt.Printf("0x%x, \n", mul)
 }

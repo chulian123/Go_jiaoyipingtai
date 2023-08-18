@@ -24,6 +24,10 @@ func (d *CoinDomain) FindCoinInfo(ctx context.Context, unit string) (*model.Coin
 	return coin, nil
 }
 
+func (d *CoinDomain) FindAll(ctx context.Context) ([]*model.Coin, error) {
+	return d.coinRepo.FindAll(ctx)
+}
+
 func NewCoinDomain(db *msdb.MsDB) *CoinDomain {
 	return &CoinDomain{
 		coinRepo: dao.NewCoinDao(db),

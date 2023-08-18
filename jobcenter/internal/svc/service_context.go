@@ -2,6 +2,8 @@ package svc
 
 import (
 	"github.com/zeromicro/go-zero/core/stores/cache"
+	"github.com/zeromicro/go-zero/zrpc"
+	"grpc-common/ucenter/ucclient"
 	"jobcenter/internal/config"
 	"jobcenter/internal/database"
 )
@@ -11,7 +13,7 @@ type ServiceContext struct {
 	MongoClient *database.MongoClient
 	KafkaClient *database.KafkaClient
 	Cache       cache.Cache
-	//AssetRpc    ucclient.Asset
+	AssetRpc    ucclient.Asset
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -23,6 +25,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		MongoClient: database.ConnectMongo(c.Mongo),
 		KafkaClient: client,
 		Cache:       redisCache,
-		//AssetRpc:    ucclient.NewAsset(zrpc.MustNewClient(c.UCenterRpc)),
+		AssetRpc:    ucclient.NewAsset(zrpc.MustNewClient(c.UCenterRpc)),
 	}
 }
