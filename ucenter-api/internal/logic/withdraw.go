@@ -8,6 +8,7 @@ import (
 	"grpc-common/ucenter/types/asset"
 	"grpc-common/ucenter/types/member"
 	"grpc-common/ucenter/types/withdraw"
+	"mscoin-common/pages"
 	"ucenter-api/internal/svc"
 	"ucenter-api/internal/types"
 )
@@ -91,6 +92,42 @@ func (w *Withdraw) SengCode(t *types.WithdrawReq) (string, error) {
 	}
 	return "success", nil
 
+}
+
+func (w *Withdraw) WithdrawCode(req *types.WithdrawReq) (string, error) {
+	//1.传递参数给rpc服务 进行提现处理
+	value := w.ctx.Value("userId").(int64)
+	_, err := w.svcCtx.UCWithdrawRpc.WithdrawCode(w.ctx, &withdraw.WithdrawReq{
+		UserId:     value,
+		Unit:       req.Unit,
+		JyPassword: req.JyPassword,
+		Code:       req.Code,
+		Address:    req.Address,
+		Amount:     req.Amount,
+		Fee:        req.Fee,
+	})
+	if err != nil {
+		return "fail", err
+	}
+	return "success", nil
+}
+
+func (w *Withdraw) Record(req *types.WithdrawReq) (*pages.PageResult, error) {
+	value := w.ctx.Value("userId").(int64)
+	records, err := w.svcCtx.UCWithdrawRpc.WithdrawRecord(w.ctx, &withdraw.WithdrawReq{
+		UserId:   value,
+		Page:     int64(req.Page),
+		PageSize: int64(req.PageSize),
+	})
+	if err != nil {
+		return nil, err
+	}
+	list := records.List
+	b := make([]any, len(list))
+	for i := range list {
+		b[i] = list[i]
+	}
+	return pages.New(b, int64(req.Page), int64(req.PageSize), records.Total), nil
 }
 
 func NewWithdrawLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Withdraw {

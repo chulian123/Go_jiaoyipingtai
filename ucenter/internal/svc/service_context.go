@@ -13,10 +13,12 @@ import (
 )
 
 type ServiceContext struct {
-	Config    config.Config
-	Cache     cache.Cache
-	Db        *msdb.MsDB
-	MarketRpc mclient.Market
+	Config         config.Config
+	Cache          cache.Cache
+	Db             *msdb.MsDB
+	MarketRpc      mclient.Market
+	KafkaCli       *database.KafkaClient
+	BitcoinAddress string
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -37,10 +39,14 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	go consumer.ExchangeOrderComplete(newRedis, completeCli, mysql)
 	btCli := cli.StartReadNew("BTC_TRANSACTION")
 	go consumer.BitCoinTransaction(newRedis, btCli, mysql)
+	withdrawCli := cli.StartReadNew("withdraw")
+	go consumer.WithdrawConsumer(withdrawCli, mysql, c.Bitcoin.Address)
 	return &ServiceContext{
-		Config:    c,
-		Cache:     redisCache,
-		Db:        mysql,
-		MarketRpc: mclient.NewMarket(zrpc.MustNewClient(c.MarketRpc)),
+		Config:         c,
+		Cache:          redisCache,
+		Db:             mysql,
+		MarketRpc:      mclient.NewMarket(zrpc.MustNewClient(c.MarketRpc)),
+		KafkaCli:       cli,
+		BitcoinAddress: c.Bitcoin.Address,
 	}
 }

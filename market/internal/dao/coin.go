@@ -27,6 +27,15 @@ func (d *CoinDao) FindByUnit(ctx context.Context, unit string) (*model.Coin, err
 	}
 	return coin, err
 }
+func (d *CoinDao) FindById(ctx context.Context, id int64) (*model.Coin, error) {
+	session := d.conn.Session(ctx)
+	coin := &model.Coin{}
+	err := session.Model(&model.Coin{}).Where("id=?", id).Take(coin).Error
+	if err != nil && err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
+	return coin, err
+}
 
 func NewCoinDao(db *msdb.MsDB) *CoinDao {
 	return &CoinDao{

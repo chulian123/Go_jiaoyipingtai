@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"github.com/jinzhu/copier"
-	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"grpc-common/market/mclient"
 	"mscoin-common/msdb"
@@ -66,6 +65,14 @@ func (d *MemberWalletDomain) FindWalletByMemIdAndCoin(ctx context.Context, membe
 	return mw, nil
 }
 
+func (d *MemberWalletDomain) FindWalletByMemIdAndCoinId(ctx context.Context, memberId int64, coinId int64) (*model.MemberWallet, error) {
+	mw, err := d.memberWalletRepo.FindByIdAndCoinId(ctx, memberId, coinId)
+	if err != nil {
+		return nil, err
+	}
+	return mw, nil
+}
+
 //func (d *MemberWalletDomain) UpdateWallet(ctx context.Context, wallet *model.MemberWallet) error {
 //	return d.transaction.Action(func(conn msdb.DbConn) error {
 //		err := d.memberWalletRepo.UpdateWallet(ctx, conn, wallet.Id, wallet.Balance, wallet.FrozenBalance)
@@ -91,26 +98,20 @@ func (d *MemberWalletDomain) UpdateWalletCoinAndBase(ctx context.Context, baseWa
 }
 
 func (d *MemberWalletDomain) FindWallet(ctx context.Context, userId int64) (list []*model.MemberWalletCoin, err error) {
-	//查询 币种详情
-	memberWallet, err := d.memberWalletRepo.FindByMemberId(ctx, userId)
+	memberWallets, err := d.memberWalletRepo.FindByMemberId(ctx, userId)
 	if err != nil {
-		logx.Error(err)
 		return nil, err
 	}
-	//在redis里面查询对应的汇率信息
-	//var cnyRate float64
-	//d.redisCache.Get("USDT::CNY::RATE", &cnyRate)
-	//if cnyRate == 0 {
-	//	cnyRate = 7
-	//}
+
+	//查询cny的汇率
 	var cnyRateStr string
 	d.redisCache.Get("USDT::CNY::RATE", &cnyRateStr)
 	var cnyRate float64 = 7
 	if cnyRateStr != "" {
 		cnyRate = tools.ToFloat64(cnyRateStr)
 	}
-	//查询 币种详情
-	for _, v := range memberWallet {
+	//需要查询 币种的详情
+	for _, v := range memberWallets {
 		coinInfo, err := d.marketRpc.FindCoinInfo(ctx, &mclient.MarketReq{
 			Unit: v.CoinName,
 		})
@@ -133,20 +134,18 @@ func (d *MemberWalletDomain) FindWallet(ctx context.Context, userId int64) (list
 		list = append(list, v.Copy(coinInfo))
 	}
 	return list, nil
-	//查询 币种详情
-
 }
 
 func (d *MemberWalletDomain) UpdateAddress(ctx context.Context, wallet *model.MemberWallet) error {
 	return d.memberWalletRepo.UpdateAddress(ctx, wallet)
 }
 
-func (d *MemberWalletDomain) GetAllAdress(ctx context.Context, coinName string) ([]string, error) {
+func (d *MemberWalletDomain) GetAllAddress(ctx context.Context, coinName string) ([]string, error) {
 	return d.memberWalletRepo.FindAllAddress(ctx, coinName)
 }
 
-func (d *MemberWalletDomain) FindByAddress(ctx context.Context, adrress string) (*model.MemberWallet, error) {
-	return d.memberWalletRepo.FindByAddress(ctx, adrress)
+func (d *MemberWalletDomain) FindByAddress(ctx context.Context, address string) (*model.MemberWallet, error) {
+	return d.memberWalletRepo.FindByAddress(ctx, address)
 }
 
 func NewMemberWalletDomain(db *msdb.MsDB, marketRpc mclient.Market, redisCache cache.Cache) *MemberWalletDomain {

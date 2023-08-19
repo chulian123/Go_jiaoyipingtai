@@ -15,6 +15,10 @@ type Config struct {
 	MarketRpc   zrpc.RpcClientConf
 	ExchangeRpc zrpc.RpcClientConf
 	Kafka       database.KafkaConfig
+	Bitcoin     BitCoinConfig
+}
+type BitCoinConfig struct {
+	Address string
 }
 type AuthConfig struct {
 	AccessSecret string

@@ -117,6 +117,20 @@ func (l *MarketLogic) FindAllCoin(req *market.MarketReq) (*market.CoinList, erro
 
 }
 
+func (l *MarketLogic) FindById(req *market.MarketReq) (*market.Coin, error) {
+	ctx, cancel := context.WithTimeout(l.ctx, 5*time.Second)
+	defer cancel()
+	coin, err := l.coinDomain.FindCoinId(ctx, req.Id)
+	if err != nil {
+		return nil, err
+	}
+	mc := &market.Coin{}
+	if err := copier.Copy(mc, coin); err != nil {
+		return nil, err
+	}
+	return mc, nil
+}
+
 func NewMarketLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MarketLogic {
 	return &MarketLogic{
 		ctx:                ctx,

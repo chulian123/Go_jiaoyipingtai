@@ -14,38 +14,53 @@ type MemberTransactionDomain struct {
 	memberWalletDomain    *MemberWalletDomain
 }
 
-func (d *MemberTransactionDomain) FindTransaction(ctx context.Context, userid int64, pageNo int64, pageSize int64, symbol string, startTime string, endTime string, t string) ([]*model.MemberTransactionVo, int64, error) {
-	//通过repo进行查询
-	memberTransactions, total, err := d.memberTransactionRepo.FindTransaction(ctx, int(pageNo), int(pageSize), userid, startTime, symbol, endTime, t)
+func (d *MemberTransactionDomain) FindTransaction(
+	ctx context.Context,
+	userId int64,
+	pageNo int64,
+	pageSize int64,
+	symbol string,
+	startTime string,
+	endTime string,
+	t string) ([]*model.MemberTransactionVo, int64, error) {
+	memberTransactions, total, err := d.memberTransactionRepo.FindTransaction(
+		ctx,
+		int(pageNo),
+		int(pageSize),
+		userId,
+		startTime,
+		endTime,
+		symbol,
+		t)
 	if err != nil {
 		return nil, total, err
 	}
-	volist := make([]*model.MemberTransactionVo, len(memberTransactions))
+	voList := make([]*model.MemberTransactionVo, len(memberTransactions))
 	for i, v := range memberTransactions {
-		volist[i] = v.ToVo()
+		voList[i] = v.ToVo()
 	}
-	return volist, total, nil
+	return voList, total, nil
 }
 
-func (d *MemberTransactionDomain) SaveRecharge(adrress string, value float64, time int64, t string, symbol string) error {
+func (d *MemberTransactionDomain) SaveRecharge(address string, value float64, time int64, t string, symbol string) error {
 	time = time * 1000
 	ctx := context.Background()
-	memberTransaction, err := d.memberTransactionRepo.FindByAmountAndTime(ctx, adrress, value, time)
+	memberTransaction, err := d.memberTransactionRepo.FindByAmountAndTime(ctx, address, value, time)
 	if err != nil {
 		return err
 	}
-	wallet, err := d.memberWalletDomain.FindByAddress(ctx, adrress)
+	wallet, err := d.memberWalletDomain.FindByAddress(ctx, address)
 	if err != nil {
 		return err
 	}
 	if wallet == nil {
-		return errors.New("address no exist")
+		return errors.New("address not exist ")
 	}
 	if memberTransaction == nil {
 		transactionType := model.TypeMap.Code(t)
 		memberTransaction = &model.MemberTransaction{}
 		memberTransaction.MemberId = wallet.MemberId
-		memberTransaction.Address = adrress
+		memberTransaction.Address = address
 		memberTransaction.Type = transactionType
 		memberTransaction.CreateTime = time * 1000
 		memberTransaction.Amount = value

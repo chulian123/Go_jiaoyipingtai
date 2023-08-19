@@ -12,9 +12,20 @@ type MemberWalletDao struct {
 	conn *gorms.GormConn
 }
 
-func (m *MemberWalletDao) FindByAddress(ctx context.Context, adrress string) (mw *model.MemberWallet, err error) {
+func (m *MemberWalletDao) FindByIdAndCoinId(ctx context.Context, memId int64, coinId int64) (mw *model.MemberWallet, err error) {
 	session := m.conn.Session(ctx)
-	err = session.Model(&model.MemberWallet{}).Where("address=?", adrress).Take(&mw).Error
+	err = session.Model(&model.MemberWallet{}).
+		Where("member_id=? and coin_id=?", memId, coinId).
+		Take(&mw).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
+	return
+}
+
+func (m *MemberWalletDao) FindByAddress(ctx context.Context, address string) (mw *model.MemberWallet, err error) {
+	session := m.conn.Session(ctx)
+	err = session.Model(&model.MemberWallet{}).Where("address=?", address).Take(&mw).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, nil
 	}
@@ -23,7 +34,20 @@ func (m *MemberWalletDao) FindByAddress(ctx context.Context, adrress string) (mw
 
 func (m *MemberWalletDao) FindAllAddress(ctx context.Context, coinName string) (list []string, err error) {
 	session := m.conn.Session(ctx)
-	err = session.Model(&model.MemberWallet{}).Where("coin_name = ? ", coinName).Select("address").Find(&list).Error
+	err = session.Model(&model.MemberWallet{}).Where("coin_name=?", coinName).Select("address").Find(&list).Error
+	return
+}
+
+func (m *MemberWalletDao) UpdateAddress(ctx context.Context, wallet *model.MemberWallet) error {
+	updateSql := "update member_wallet set address=?,address_private_key=? where id=?"
+	session := m.conn.Session(ctx)
+	err := session.Model(&model.MemberWallet{}).Exec(updateSql, wallet.Address, wallet.AddressPrivateKey, wallet.Id).Error
+	return err
+}
+
+func (m *MemberWalletDao) FindByMemberId(ctx context.Context, memId int64) (list []*model.MemberWallet, err error) {
+	session := m.conn.Session(ctx)
+	err = session.Model(&model.MemberWallet{}).Where("member_id=?", memId).Find(&list).Error
 	return
 }
 
@@ -59,19 +83,6 @@ func (m *MemberWalletDao) FindByIdAndCoinName(ctx context.Context, memId int64, 
 		return nil, nil
 	}
 	return
-}
-
-func (m *MemberWalletDao) FindByMemberId(ctx context.Context, memberId int64) (list []*model.MemberWallet, err error) {
-	session := m.conn.Session(ctx)
-	err = session.Model(&model.MemberWallet{}).Where("member_id = ?", memberId).Find(&list).Error
-	return
-}
-
-func (m *MemberWalletDao) UpdateAddress(ctx context.Context, wallet *model.MemberWallet) error {
-	updateSql := "update member_wallet set address=?,address_private_key=? where id=?"
-	session := m.conn.Session(ctx)
-	err := session.Model(&model.MemberWallet{}).Exec(updateSql, wallet.Address, wallet.AddressPrivateKey, wallet.Id).Error
-	return err
 }
 
 func NewMemberWalletDao(db *msdb.MsDB) *MemberWalletDao {

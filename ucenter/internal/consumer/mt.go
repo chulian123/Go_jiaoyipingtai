@@ -10,25 +10,24 @@ import (
 )
 
 type BitCoinTransactionResult struct {
-	Value  float64 `json:"value"`
-	Time   int64   `json:"time"`
-	Adress string  `json:"adress"`
-	Type   string  `json:"type"`
-	Symbol string  `json:"symbol"`
+	Value   float64 `json:"value"`
+	Time    int64   `json:"time"`
+	Address string  `json:"address"`
+	Type    string  `json:"type"`
+	Symbol  string  `json:"symbol"`
 }
 
-func BitCoinTransaction(redisClient *redis.Redis, kakfaClient *database.KafkaClient, db *msdb.MsDB) {
+func BitCoinTransaction(redisCli *redis.Redis, kafkaCli *database.KafkaClient, db *msdb.MsDB) {
 	for {
-		kafkaData := kakfaClient.Read()
-		var result BitCoinTransactionResult
-		json.Unmarshal(kafkaData.Data, &result)
-		//解析出来数据 调用domian然后存储到数据库
+		kafkaData := kafkaCli.Read()
+		var bt BitCoinTransactionResult
+		json.Unmarshal(kafkaData.Data, &bt)
+		//解析出来数据 调用domain存储到数据库即可
 		transactionDomain := domain.NewMemberTransactionDomain(db)
-		err := transactionDomain.SaveRecharge(result.Adress, result.Value, result.Time, result.Type, result.Symbol)
+		err := transactionDomain.SaveRecharge(bt.Address, bt.Value, bt.Time, bt.Type, bt.Symbol)
 		if err != nil {
-			kakfaClient.Rput(kafkaData)
 			time.Sleep(200 * time.Millisecond)
+			kafkaCli.Rput(kafkaData)
 		}
-
 	}
 }

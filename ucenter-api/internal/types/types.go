@@ -163,4 +163,12 @@ type AddressSimple struct {
 }
 
 type WithdrawReq struct {
+	Unit       string  `json:"unit,optional" form:"unit,optional"`
+	Address    string  `json:"address,optional" form:"address,optional"`
+	Amount     float64 `json:"amount,optional" form:"amount,optional"`
+	Fee        float64 `json:"fee,optional" form:"fee,optional"`
+	JyPassword string  `json:"jyPassword,optional" form:"jyPassword,optional"`
+	Code       string  `json:"code,optional" form:"code,optional"`
+	Page       int     `json:"page,optional" form:"page,optional"`
+	PageSize   int     `json:"pageSize,optional" form:"pageSize,optional"`
 }

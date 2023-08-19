@@ -26,7 +26,6 @@ func (*MemberWallet) TableName() string {
 }
 
 func (w *MemberWallet) Copy(coinInfo *mclient.Coin) *MemberWalletCoin {
-	//转换类型
 	mc := &MemberWalletCoin{}
 	copier.Copy(mc, w)
 	coin := &market.Coin{}

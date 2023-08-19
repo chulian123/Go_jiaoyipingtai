@@ -40,40 +40,36 @@ func (l *AssetLogic) FindWalletBySymbol(req *asset.AssetReq) (*asset.MemberWalle
 }
 
 func (l *AssetLogic) FindWallet(req *asset.AssetReq) (*asset.MemberWalletList, error) {
-	//根据用户id来查询用户钱包 循坏钱包信息 根据币种 查询币种详情
-	wallet, err := l.memberWalletDomain.FindWallet(l.ctx, req.UserId)
+	//根据用户id查询用户的钱包 循环钱包信息 根据币种 查询币种详情
+	memberWalletCoins, err := l.memberWalletDomain.FindWallet(l.ctx, req.UserId)
 	if err != nil {
 		return nil, err
 	}
 	var list []*asset.MemberWallet
-	copier.Copy(&list, wallet)
+	copier.Copy(&list, memberWalletCoins)
 	return &asset.MemberWalletList{
 		List: list,
 	}, nil
 }
 
 func (l *AssetLogic) ResetAddress(req *asset.AssetReq) (*asset.AssetResp, error) {
-	//查询用户钱包 查询用户钱包地址 地址为空就要生成新的
+	//查询用户的钱包 检查address是否为空 如果未空 生成地址 进行更新
 	memberWallet, err := l.memberWalletDomain.FindWalletByMemIdAndCoin(l.ctx, req.UserId, req.CoinName)
 	if err != nil {
 		return nil, err
 	}
-	//判断比特币的
 	if req.CoinName == "BTC" {
 		if memberWallet.Address == "" {
 			wallet, err := base.NewWallet()
 			if err != nil {
-				logx.Info("生成NewWallet失败!")
 				return nil, err
 			}
 			address := wallet.GetTestAddress()
-			privatekey := wallet.GetPriKey()
-			memberWallet.AddressPrivateKey = privatekey
+			priKey := wallet.GetPriKey()
+			memberWallet.AddressPrivateKey = priKey
 			memberWallet.Address = string(address)
-			//更新钱包信息
 			err = l.memberWalletDomain.UpdateAddress(l.ctx, memberWallet)
 			if err != nil {
-				logx.Info("更新钱包信息失败!")
 				return nil, err
 			}
 		}
@@ -82,26 +78,35 @@ func (l *AssetLogic) ResetAddress(req *asset.AssetReq) (*asset.AssetResp, error)
 }
 
 func (l *AssetLogic) FindTransaction(req *asset.AssetReq) (*asset.MemberTransactionList, error) {
-	//查询所有的充值记录  分页查询
-	transaction, total, err := l.memberTransactionDomain.FindTransaction(l.ctx, req.UserId, req.PageNo, req.PageSize, req.Symbol, req.StartTime, req.EndTime, req.Symbol)
+	//查询所有的充值记录 分页查询
+	memberTransactionVos, total, err := l.memberTransactionDomain.FindTransaction(
+		l.ctx,
+		req.UserId,
+		req.PageNo,
+		req.PageSize,
+		req.Symbol,
+		req.StartTime,
+		req.EndTime,
+		req.Type,
+	)
 	if err != nil {
 		return nil, err
 	}
 	var list []*asset.MemberTransaction
-	copier.Copy(&list, transaction)
+	copier.Copy(&list, memberTransactionVos)
 	return &asset.MemberTransactionList{
 		List:  list,
 		Total: total,
 	}, nil
 }
 
-func (l *AssetLogic) GetAdress(req *asset.AssetReq) (*asset.AddressList, error) {
-	adresslist, err := l.memberWalletDomain.GetAllAdress(l.ctx, req.CoinName)
+func (l *AssetLogic) GetAddress(req *asset.AssetReq) (*asset.AddressList, error) {
+	addressList, err := l.memberWalletDomain.GetAllAddress(l.ctx, req.CoinName)
 	if err != nil {
 		return nil, err
 	}
 	return &asset.AddressList{
-		List: adresslist,
+		List: addressList,
 	}, nil
 }
 

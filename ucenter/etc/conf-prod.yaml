@@ -1,0 +1,36 @@
+Name: ucenter.rpc
+ListenOn: 0.0.0.0:8081
+Etcd:
+  Hosts:
+  - mscoin-etcd3-hs.mscoin.svc.cluster.local:2379
+  Key: ucenter.rpc
+Mysql:
+  DataSource: root:root@tcp(mscoin-mysql-headless.mscoin.svc.cluster.local:3306)/mscoin?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+CacheRedis:
+  - Host: mscoin-redis-hs.mscoin.svc.cluster.local:6379
+    Type: node
+Captcha:
+  Vid: 63fec1c3507890ee2e7f9dd1
+  Key: ca8f1bdc1ee5438b830aac9beef314e9
+JWT:
+  AccessSecret: "!@#$mscoin"
+  AccessExpire: 604800
+MarketRpc:
+  Etcd:
+    Hosts:
+      - mscoin-etcd3-hs.mscoin.svc.cluster.local:2379
+    Key: market.rpc
+  NonBlock: true
+Kafka:
+  Addr: mscoin-kafka-hs.mscoin.svc.cluster.local:9092
+  WriteCap: 100
+  ReadCap: 100
+  ConsumerGroup: "ucenter-consumer"
+ExchangeRpc:
+  Etcd:
+    Hosts:
+      - mscoin-etcd3-hs.mscoin.svc.cluster.local:2379
+    Key: exchange.rpc
+  NonBlock: true
+Bitcoin:
+  Address: "http://mscoin-bitcoin-hs.mscoin.svc.cluster.local:18332"

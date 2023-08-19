@@ -171,7 +171,7 @@ func (k *KafkaClient) SendSync(data KafkaData) error {
 		Addr:     kafka.TCP(k.c.Addr),
 		Balancer: &kafka.LeastBytes{},
 	}
-	k.w = w
+	w.AllowAutoTopicCreation = true
 	messages := []kafka.Message{
 		{
 			Topic: data.Topic,
@@ -182,6 +182,6 @@ func (k *KafkaClient) SendSync(data KafkaData) error {
 	var err error
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	err = k.w.WriteMessages(ctx, messages...)
+	err = w.WriteMessages(ctx, messages...)
 	return err
 }

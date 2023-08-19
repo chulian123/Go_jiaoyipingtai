@@ -37,5 +37,6 @@ func RegisterHandlers(r *Routers, serverCtx *svc.ServiceContext) {
 	withdrawGroup.Use(midd.Auth(serverCtx.Config.JWT.AccessSecret))
 	withdrawGroup.Post("/uc/withdraw/support/coin/info", withdraw.QueryWithdrawCoin) //提现币种详细信息
 	withdrawGroup.Post("/uc/mobile/withdraw/code", withdraw.SengCode)                //提币时，需要先向手机发送验证码，确保安全
-
+	withdrawGroup.Post("/uc/withdraw/apply/code", withdraw.WithdrawCode)             // 提现
+	withdrawGroup.Post("/uc/withdraw/record", withdraw.Record)                       //提现记录
 }
