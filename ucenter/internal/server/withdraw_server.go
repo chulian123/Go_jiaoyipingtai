@@ -26,10 +26,11 @@ func (s *WithdrawServer) FindAddressByCoinId(ctx context.Context, in *withdraw.W
 	return l.FindAddressByCoinId(in)
 }
 
-//func (s *WithdrawServer) SendCode(ctx context.Context, in *withdraw.WithdrawReq) (*withdraw.NoRes, error) {
-//	l := logic.NewWithdrawLogic(ctx, s.svcCtx)
-//	return l.SendCode(in)
-//}
+func (s *WithdrawServer) SendCode(ctx context.Context, in *withdraw.WithdrawReq) (*withdraw.NoRes, error) {
+	l := logic.NewWithdrawLogic(ctx, s.svcCtx)
+	return l.SendCode(in)
+}
+
 //
 //func (s *WithdrawServer) WithdrawCode(ctx context.Context, in *withdraw.WithdrawReq) (*withdraw.NoRes, error) {
 //	l := logic.NewWithdrawLogic(ctx, s.svcCtx)

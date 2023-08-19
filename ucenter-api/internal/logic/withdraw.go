@@ -6,6 +6,7 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"grpc-common/market/types/market"
 	"grpc-common/ucenter/types/asset"
+	"grpc-common/ucenter/types/member"
 	"grpc-common/ucenter/types/withdraw"
 	"ucenter-api/internal/svc"
 	"ucenter-api/internal/types"
@@ -70,6 +71,25 @@ func (w *Withdraw) QueryWithdrawCoin(req *types.WithdrawReq) ([]*types.WithdrawW
 		wwlist[i] = &ww
 	}
 	return wwlist, nil
+
+}
+
+func (w *Withdraw) SengCode(t *types.WithdrawReq) (string, error) {
+	//1.根据当前登录用户id 查询用户消息 获取到手机号
+	userId := w.ctx.Value("userId").(int64)
+	memberInfo, err := w.svcCtx.UCMemberRpc.FindMemberById(w.ctx, &member.MemberReq{MemberId: userId})
+	if err != nil {
+		return "", err
+	}
+	phone := memberInfo.MobilePhone
+	//2.根据注册手机号发送验证码
+	_, err = w.svcCtx.UCWithdrawRpc.SendCode(w.ctx, &withdraw.WithdrawReq{
+		Phone: phone,
+	})
+	if err != nil {
+		return "", err
+	}
+	return "success", nil
 
 }
 

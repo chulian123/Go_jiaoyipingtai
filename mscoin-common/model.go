@@ -28,7 +28,7 @@ func (r *Result) Success(data any) {
 // Deal err 进行自定义 code 和 msg 有两个属性的err
 func (r *Result) Deal(data any, err error) *Result {
 	if err != nil {
-		r.Fail(-999, err.Error())
+		r.Fail(500, err.Error())
 		return r
 	}
 	r.Success(data)
